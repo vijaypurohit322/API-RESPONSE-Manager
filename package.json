@@ -1,0 +1,24 @@
+{
+  "name": "app",
+  "version": "1.0.0",
+  "description": "You can see changes and manage your api response using this repo.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vijaypurohit322/API-RESPONSE-Manager.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/vijaypurohit322/API-RESPONSE-Manager/issues"
+  },
+  "homepage": "https://github.com/vijaypurohit322/API-RESPONSE-Manager#readme",
+  "dependencies": {
+    "bcrypt": "^6.0.0"
+  }
+}
