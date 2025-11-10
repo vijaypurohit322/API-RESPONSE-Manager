@@ -93,3 +93,31 @@ An interactive tool for developers to share API responses with anyone using a li
    - In the frontend, you can view the captured API responses for your project.
    - Generate a shareable link to share your project with others.
    - Add comments to API responses to collaborate with your team.
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Acknowledgments
+
+- Contributed by Google Jules
+
+## Support
+
+For issues, questions, or contributions, please open an issue on the GitHub repository.
+
+---
+
+**Version:** 1.0.0  <br>
+**Last Updated:** November 2025 <br>
+**Author:** Vijay Singh Purohit <br>
+**Email:** <a href="mailto:vijaypurohit322@gmail.com?">vijaypurohit322@gmail.com</a> 
+
