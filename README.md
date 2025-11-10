@@ -2,6 +2,8 @@
 
 An interactive tool for developers to capture, share, and collaborate on API responses. Share your API testing results with team members using unique project links - no login required for viewers.
 
+![Demo](https://drive.google.com/uc?export=view&id=12eR09C2PcgCbvThRKtoSwpdEBfOa1eTb)
+
 ## ✨ Features
 
 - **🔐 User Authentication:** Secure JWT-based registration and login
@@ -251,7 +253,7 @@ For issues, questions, or contributions, please open an issue on the GitHub repo
 **Author:** Vijay Singh Purohit <br>
 **Email:** <a href="mailto:vijaypurohit322@gmail.com?">vijaypurohit322@gmail.com</a>
 
-## 🎉 What's New in v2.0.0
+## 🎉 What's New in v2.0.1
 
 - ✅ Real-time polling for automatic response updates
 - ✅ Improved authentication with auto-redirect on session expiry

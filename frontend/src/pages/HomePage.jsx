@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import authService from '../services/authService';
+import Navbar from '../components/Navbar';
 import '../App.css';
 
 const HomePage = () => {
@@ -14,25 +15,14 @@ const HomePage = () => {
 
   return (
     <div className="app">
-      <nav className="navbar">
-        <div className="navbar-brand">📡 API Response Manager</div>
-        <ul className="navbar-nav">
-          <li><Link to="/">Home</Link></li>
-          <li><Link to="/projects">Projects</Link></li>
-          <li>
-            <button onClick={handleLogout} className="btn btn-secondary">
-              Logout
-            </button>
-          </li>
-        </ul>
-      </nav>
+      <Navbar />
 
       <div className="container">
         <div style={{ textAlign: 'center', padding: '4rem 0' }}>
-          <h1 style={{ fontSize: '3rem', fontWeight: '800', marginBottom: '1rem', color: 'var(--text-primary)' }}>
+          <h1 style={{ fontSize: 'var(--font-size-4xl)', fontWeight: 'var(--font-weight-bold)', marginBottom: '1rem', color: 'var(--text-primary)' }}>
             Welcome to API Response Manager
           </h1>
-          <p style={{ fontSize: '1.25rem', color: 'var(--text-secondary)', marginBottom: '3rem', maxWidth: '600px', margin: '0 auto 3rem' }}>
+          <p style={{ fontSize: 'var(--font-size-lg)', color: 'var(--text-secondary)', marginBottom: '3rem', maxWidth: '600px', margin: '0 auto 3rem' }}>
             Capture, share, and collaborate on API responses with your team
           </p>
           <Link to="/projects">
