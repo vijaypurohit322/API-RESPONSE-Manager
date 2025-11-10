@@ -3,7 +3,9 @@
 An interactive tool for developers to capture, share, and collaborate on API responses. Share your API testing results with team members using unique project links - no login required for viewers.
 
 ![Demo](https://drive.google.com/uc?export=view&id=12eR09C2PcgCbvThRKtoSwpdEBfOa1eTb)
-
+![Dashboard](frontend/public/images/Dashboard.png)
+![Project](frontend/public/images/Projects.png)
+![Project Details](frontend/public/images/ProjDetails.png)
 ## ✨ Features
 
 - **🔐 User Authentication:** Secure JWT-based registration and login
