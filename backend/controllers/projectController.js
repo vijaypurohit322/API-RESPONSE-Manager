@@ -41,6 +41,22 @@ exports.getProjects = async (req, res) => {
   }
 };
 
+exports.getProject = async (req, res) => {
+  try {
+    const project = await Project.findById(req.params.id);
+    if (!project) {
+      return res.status(404).json({ msg: 'Project not found' });
+    }
+    if (project.user.toString() !== req.user.id) {
+      return res.status(401).json({ msg: 'Not authorized' });
+    }
+    res.json(project);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server error');
+  }
+};
+
 exports.updateProject = async (req, res) => {
   const { name } = req.body;
   try {

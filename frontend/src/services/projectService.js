@@ -12,6 +12,15 @@ const getProjects = () => {
   });
 };
 
+const getProject = (id) => {
+  const user = authService.getCurrentUser();
+  return axios.get(API_URL + id, {
+    headers: {
+      'x-auth-token': user.token,
+    },
+  });
+};
+
 const createProject = (name) => {
   const user = authService.getCurrentUser();
   return axios.post(
@@ -25,7 +34,18 @@ const createProject = (name) => {
   );
 };
 
+const deleteProject = (id) => {
+  const user = authService.getCurrentUser();
+  return axios.delete(API_URL + id, {
+    headers: {
+      'x-auth-token': user.token,
+    },
+  });
+};
+
 export default {
   getProjects,
+  getProject,
   createProject,
+  deleteProject,
 };
