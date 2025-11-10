@@ -1,5 +1,13 @@
 {
+  "name": "api-response-manager-proxy",
+  "version": "2.0.0",
+  "description": "Proxy server for capturing API responses",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
   "dependencies": {
+    "app": "file:..",
     "axios": "^1.13.2",
     "express": "^5.1.0",
     "http-proxy-middleware": "^3.0.5"

@@ -1,7 +1,7 @@
 {
-  "name": "app",
-  "version": "1.0.0",
-  "description": "You can see changes and manage your api response using this repo.",
+  "name": "api-response-manager",
+  "version": "2.0.0",
+  "description": "Capture, share, and collaborate on API responses with your team using shareable project links.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -11,7 +11,7 @@
     "url": "git+https://github.com/vijaypurohit322/API-RESPONSE-Manager.git"
   },
   "keywords": [],
-  "author": "",
+  "author": "Vijay Singh Purohit",
   "license": "ISC",
   "type": "commonjs",
   "bugs": {
@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/vijaypurohit322/API-RESPONSE-Manager#readme",
   "dependencies": {
+    "axios": "^1.13.2",
     "bcrypt": "^6.0.0"
   }
 }

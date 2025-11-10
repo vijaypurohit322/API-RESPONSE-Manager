@@ -1,5 +1,14 @@
 {
+  "name": "api-response-manager-backend",
+  "version": "2.0.0",
+  "description": "Backend server for API Response Manager",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
   "dependencies": {
+    "app": "file:..",
     "bcrypt": "^6.0.0",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
