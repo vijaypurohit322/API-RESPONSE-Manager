@@ -24,12 +24,12 @@ const LoginPage = () => {
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'var(--bg-color)' }}>
-      <div className="card" style={{ maxWidth: '400px', width: '100%', margin: '1rem' }}>
+      <div className="auth-container card" style={{ maxWidth: '400px', width: '100%', margin: '1rem' }}>
         <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-          <h1 style={{ fontSize: '2rem', fontWeight: '700', color: 'var(--primary-color)', marginBottom: '0.5rem' }}>
+          <h1 style={{ fontSize: 'var(--font-size-3xl)', fontWeight: 'var(--font-weight-bold)', color: 'var(--primary-color)', marginBottom: '0.5rem' }}>
             API Response Manager
           </h1>
-          <p style={{ color: 'var(--text-secondary)' }}>Sign in to your account</p>
+          <p style={{ color: 'var(--text-secondary)', fontSize: 'var(--font-size-base)' }}>Sign in to your account</p>
         </div>
 
         {message && (

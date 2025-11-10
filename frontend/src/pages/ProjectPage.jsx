@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import projectService from '../services/projectService';
 import authService from '../services/authService';
+import Navbar from '../components/Navbar';
 import '../App.css';
 
 const ProjectPage = () => {
@@ -58,24 +59,13 @@ const ProjectPage = () => {
 
   return (
     <div className="app">
-      <nav className="navbar">
-        <div className="navbar-brand">📡 API Response Manager</div>
-        <ul className="navbar-nav">
-          <li><Link to="/">Home</Link></li>
-          <li><Link to="/projects">Projects</Link></li>
-          <li>
-            <button onClick={handleLogout} className="btn btn-secondary">
-              Logout
-            </button>
-          </li>
-        </ul>
-      </nav>
+      <Navbar />
 
       <div className="container">
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
           <div>
-            <h1 style={{ fontSize: '2rem', fontWeight: '700', marginBottom: '0.5rem' }}>My Projects</h1>
-            <p style={{ color: 'var(--text-secondary)' }}>Manage your API response capture projects</p>
+            <h1 style={{ fontSize: 'var(--font-size-3xl)', fontWeight: 'var(--font-weight-bold)', marginBottom: '0.5rem' }}>My Projects</h1>
+            <p style={{ color: 'var(--text-secondary)', fontSize: 'var(--font-size-base)' }}>Manage your API response capture projects</p>
           </div>
           <button 
             onClick={() => setShowCreateForm(!showCreateForm)} 
@@ -130,8 +120,8 @@ const ProjectPage = () => {
         ) : projects.length === 0 ? (
           <div className="card" style={{ textAlign: 'center', padding: '3rem' }}>
             <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>📂</div>
-            <h3 style={{ fontSize: '1.5rem', fontWeight: '600', marginBottom: '0.5rem' }}>No projects yet</h3>
-            <p style={{ color: 'var(--text-secondary)', marginBottom: '2rem' }}>
+            <h3 style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 'var(--font-weight-semibold)', marginBottom: '0.5rem' }}>No projects yet</h3>
+            <p style={{ color: 'var(--text-secondary)', marginBottom: '2rem', fontSize: 'var(--font-size-base)' }}>
               Create your first project to start capturing API responses
             </p>
             <button onClick={() => setShowCreateForm(true)} className="btn btn-primary">
