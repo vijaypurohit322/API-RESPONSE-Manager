@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import ThemeToggle from '../components/ThemeToggle';
 import '../App.css';
 
 const SharedProjectPage = () => {
@@ -52,7 +53,15 @@ const SharedProjectPage = () => {
     return (
       <div className="app">
         <nav className="navbar">
-          <div className="navbar-brand">📡 API Response Manager</div>
+          <div className="navbar-brand">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M12 16v-4"/>
+              <path d="M12 8h.01"/>
+            </svg>
+            <span>API Response Manager</span>
+          </div>
+          <ThemeToggle />
         </nav>
         <div className="container" style={{ textAlign: 'center', padding: '4rem' }}>
           <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>⏳</div>
@@ -67,7 +76,15 @@ const SharedProjectPage = () => {
     return (
       <div className="app">
         <nav className="navbar">
-          <div className="navbar-brand">📡 API Response Manager</div>
+          <div className="navbar-brand">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M12 16v-4"/>
+              <path d="M12 8h.01"/>
+            </svg>
+            <span>API Response Manager</span>
+          </div>
+          <ThemeToggle />
         </nav>
         <div className="container" style={{ textAlign: 'center', padding: '4rem' }}>
           <div className="card" style={{ maxWidth: '500px', margin: '0 auto', padding: '3rem' }}>
@@ -97,11 +114,19 @@ const SharedProjectPage = () => {
   return (
     <div className="app">
       <nav className="navbar">
-        <div className="navbar-brand">📡 API Response Manager</div>
+        <div className="navbar-brand">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M12 16v-4"/>
+            <path d="M12 8h.01"/>
+          </svg>
+          <span>API Response Manager</span>
+        </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
           <span style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
             👁️ Viewing Shared Project
           </span>
+          <ThemeToggle />
         </div>
       </nav>
 

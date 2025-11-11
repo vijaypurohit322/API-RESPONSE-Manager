@@ -2,7 +2,7 @@
 const axios = require('axios');
 
 const testData = {
-  projectId: '6911b8c8387d845aaecc849f',
+  projectId: '6911d534387d845aaecc8895',
   requestMethod: 'GET',
   requestUrl: '/api/test',
   requestHeaders: { 'content-type': 'application/json' },
