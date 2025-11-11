@@ -2,7 +2,6 @@
 
 An interactive tool for developers to capture, share, and collaborate on API responses. Share your API testing results with team members using unique project links - no login required for viewers.
 
-
 Demo SVG: <a>https://drive.google.com/uc?export=view&id=12eR09C2PcgCbvThRKtoSwpdEBfOa1eTb </a>
 
 ![Dashboard](frontend/public/images/Dashboard.png)
