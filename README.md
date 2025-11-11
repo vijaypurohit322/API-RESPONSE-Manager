@@ -253,12 +253,12 @@ For issues, questions, or contributions, please open an issue on the GitHub repo
 
 ---
 
-**Version:** 2.0.2  <br>
+**Version:** 2.0.3  <br>
 **Last Updated:** November 11, 2025 <br>
 **Author:** Vijay Singh Purohit <br>
 **Email:** <a href="mailto:vijaypurohit322@gmail.com?">vijaypurohit322@gmail.com</a>
 
-## 🎉 What's New in v2.0.2
+## 🎉 What's New in v2.0.3
 
 - 🌓 Added full Dark/Light Theme support across the app
   - Theme toggle with sun/moon icons
