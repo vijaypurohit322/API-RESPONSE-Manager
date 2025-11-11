@@ -20,6 +20,164 @@
   --line-height-relaxed: 1.75;
 }
 
+/* === Light Theme (Default) === */
+:root,
+[data-theme="light"] {
+  --bg-color: #f3f4f6;
+  --card-bg: #ffffff;
+  --text-primary: #1f2937;
+  --text-secondary: #6b7280;
+  --primary-color: #4f46e5;
+  --secondary-color: #10b981;
+  --border-color: #e5e7eb;
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* === Dark Theme === */
+[data-theme="dark"] {
+  --bg-color: #111827;
+  --card-bg: #1f2937;
+  --text-primary: #f9fafb;
+  --text-secondary: #9ca3af;
+  --primary-color: #6366f1;
+  --secondary-color: #34d399;
+  --border-color: #374151;
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Dark theme specific adjustments */
+[data-theme="dark"] .form-control {
+  background-color: #374151;
+  border-color: #4b5563;
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .form-control:focus {
+  border-color: var(--primary-color);
+  background-color: #374151;
+}
+
+[data-theme="dark"] code,
+[data-theme="dark"] pre {
+  background-color: #0f172a !important;
+  color: #e2e8f0 !important;
+  border: 1px solid #374151;
+}
+
+[data-theme="dark"] .alert {
+  background-color: #374151;
+  border-color: #4b5563;
+}
+
+[data-theme="dark"] .mobile-sidebar-content {
+  background-color: #1f2937;
+  border-left: 1px solid var(--border-color);
+}
+
+/* Dark theme navbar active state */
+[data-theme="dark"] .navbar-nav a.active {
+  color: #a5b4fc;
+  background-color: rgba(99, 102, 241, 0.2);
+}
+
+[data-theme="dark"] .navbar-nav a:hover,
+[data-theme="dark"] .navbar-nav button:hover {
+  background-color: rgba(99, 102, 241, 0.15);
+}
+
+[data-theme="dark"] .mobile-nav a.active {
+  background-color: rgba(99, 102, 241, 0.2);
+  color: #a5b4fc;
+  border-left-color: #a5b4fc;
+}
+
+[data-theme="dark"] .mobile-nav-bottom {
+  background-color: #1f2937;
+  border-top-color: #374151;
+}
+
+/* Dark theme status badges */
+[data-theme="dark"] .status-badge-get {
+  background-color: rgba(59, 130, 246, 0.2) !important;
+  color: #93c5fd !important;
+}
+
+[data-theme="dark"] .status-badge-post {
+  background-color: rgba(34, 197, 94, 0.2) !important;
+  color: #86efac !important;
+}
+
+[data-theme="dark"] .status-badge-success {
+  background-color: rgba(34, 197, 94, 0.2) !important;
+  color: #86efac !important;
+}
+
+[data-theme="dark"] .status-badge-error {
+  background-color: rgba(239, 68, 68, 0.2) !important;
+  color: #fca5a5 !important;
+}
+
+/* Dark theme button adjustments */
+[data-theme="dark"] .btn-primary {
+  background-color: #6366f1;
+  border-color: #6366f1;
+}
+
+[data-theme="dark"] .btn-primary:hover {
+  background-color: #4f46e5;
+  border-color: #4f46e5;
+}
+
+[data-theme="dark"] .btn-secondary {
+  background-color: #374151;
+  border-color: #4b5563;
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .btn-secondary:hover {
+  background-color: #4b5563;
+  border-color: #6b7280;
+}
+
+/* Dark theme link colors */
+[data-theme="dark"] a {
+  color: #a5b4fc;
+}
+
+[data-theme="dark"] a:hover {
+  color: #c7d2fe;
+}
+
+/* Dark theme alert colors */
+[data-theme="dark"] .alert-error {
+  background-color: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.3);
+  color: #fca5a5;
+}
+
+[data-theme="dark"] .alert-success {
+  background-color: rgba(34, 197, 94, 0.15);
+  border-color: rgba(34, 197, 94, 0.3);
+  color: #86efac;
+}
+
+/* Dark theme for inline status colors */
+[data-theme="dark"] .status-success {
+  color: #86efac !important;
+}
+
+[data-theme="dark"] .status-warning {
+  color: #fcd34d !important;
+}
+
+[data-theme="dark"] .status-error {
+  color: #fca5a5 !important;
+}
+
 .app {
   min-height: 100vh;
   background-color: var(--bg-color);
@@ -101,6 +259,31 @@
 /* Hide mobile menu button on desktop */
 .mobile-menu-btn {
   display: none;
+}
+
+/* === Theme Toggle Button === */
+.theme-toggle-btn {
+  background-color: transparent;
+  border: 1.5px solid var(--border-color);
+  color: var(--text-primary);
+  cursor: pointer;
+  padding: 0.625rem;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.theme-toggle-btn:hover {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  color: white;
+  transform: rotate(15deg);
+}
+
+.theme-toggle-btn svg {
+  display: block;
 }
 
 .btn {
@@ -212,6 +395,8 @@
   transform: translateX(100%);
   transition: transform 0.3s ease-in-out;
   overflow-y: auto;
+  display: flex;
+  flex-direction: column;
 }
 
 .mobile-sidebar.open .mobile-sidebar-content {
@@ -255,14 +440,15 @@
   list-style: none;
   padding: 1rem 0;
   margin: 0;
+  flex: 1;
+  overflow-y: auto;
 }
 
 .mobile-nav li {
   margin: 0;
 }
 
-.mobile-nav a,
-.mobile-nav button {
+.mobile-nav a {
   display: flex;
   align-items: center;
   gap: 1rem;
@@ -272,15 +458,9 @@
   font-size: var(--font-size-base);
   font-weight: var(--font-weight-medium);
   transition: all 0.2s;
-  border: none;
-  background: none;
-  width: 100%;
-  text-align: left;
-  cursor: pointer;
 }
 
-.mobile-nav a:hover,
-.mobile-nav button:hover {
+.mobile-nav a:hover {
   background-color: rgba(79, 70, 229, 0.05);
   color: var(--primary-color);
 }
@@ -296,10 +476,33 @@
   flex-shrink: 0;
 }
 
-.mobile-logout {
-  margin-top: 1rem;
+/* Mobile navigation bottom fixed section */
+.mobile-nav-bottom {
+  position: sticky;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.5rem;
+  background-color: var(--card-bg);
   border-top: 1px solid var(--border-color);
-  padding-top: 1rem !important;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.mobile-logout-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
 }
 
 /* Mobile Styles */

@@ -15,6 +15,7 @@ An interactive tool for developers to capture, share, and collaborate on API res
 - **💬 Collaboration:** Add comments to API responses for team discussions
 - **⚡ Real-time Updates:** Automatic polling for new responses (every 10 seconds)
 - **🎨 Modern UI:** Clean, responsive design with intuitive navigation
+- **🌓 Dark/Light Theme:** Theme toggle with system auto-detect and persisted preference
 - **🔄 Auto-redirect:** Automatic logout and redirect on session expiry
 
 ## Tech Stack
@@ -250,18 +251,24 @@ For issues, questions, or contributions, please open an issue on the GitHub repo
 
 ---
 
-**Version:** 2.0.0  <br>
-**Last Updated:** November 10, 2025 <br>
+**Version:** 2.0.2  <br>
+**Last Updated:** November 11, 2025 <br>
 **Author:** Vijay Singh Purohit <br>
 **Email:** <a href="mailto:vijaypurohit322@gmail.com?">vijaypurohit322@gmail.com</a>
 
-## 🎉 What's New in v2.0.1
+## 🎉 What's New in v2.0.2
 
-- ✅ Real-time polling for automatic response updates
-- ✅ Improved authentication with auto-redirect on session expiry
-- ✅ Enhanced UI with better visual feedback
-- ✅ Shareable project links with public access
-- ✅ Comment system for team collaboration
-- ✅ Comprehensive error handling
-- ✅ Better proxy logging and diagnostics 
+- 🌓 Added full Dark/Light Theme support across the app
+  - Theme toggle with sun/moon icons
+  - Auto-detect system preference (prefers-color-scheme)
+  - Persists user choice via localStorage
+- 📱 Mobile sidebar improved
+  - Theme toggle and Logout placed together in a bottom fixed bar
+  - Cleaner navigation list without oversized controls
+- 🎯 Navbar and active states refined for dark mode
+  - Better contrast and accessible indigo highlights
+- 🧩 Shared view and Auth pages updated
+  - Theme toggle added to Login/Signup and Shared Project pages
+- 🧱 Code blocks, forms, alerts and badges tuned for dark theme
+  - Proper background/foreground colors and borders
 
