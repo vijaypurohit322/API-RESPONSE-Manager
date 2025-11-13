@@ -18,12 +18,15 @@ Demo SVG: <a>https://drive.google.com/uc?export=view&id=12eR09C2PcgCbvThRKtoSwpd
 - **🎨 Modern UI:** Clean, responsive design with intuitive navigation
 - **🌓 Dark/Light Theme:** Theme toggle with system auto-detect and persisted preference
 - **🔄 Auto-redirect:** Automatic logout and redirect on session expiry
+- **🚇 Live Tunneling:** Expose local APIs to the internet with secure public URLs (like ngrok/Tunnelmole)
 
 ## Tech Stack
 
 - **Backend:** Node.js, Express, MongoDB
 - **Frontend:** React, Vite
 - **Proxy Server:** Node.js, http-proxy-middleware
+- **Tunnel Server:** Node.js, WebSocket (ws), Express
+- **Tunnel Client:** Node.js, WebSocket, Axios
 
 ## Getting Started
 
@@ -78,6 +81,13 @@ Demo SVG: <a>https://drive.google.com/uc?export=view&id=12eR09C2PcgCbvThRKtoSwpd
    npm start --prefix proxy
    ```
    The proxy will be available at `http://localhost:8080`.
+
+5. **Start the tunnel server (optional - for live tunneling):**
+   ```bash
+   npm install --prefix tunnel-server
+   npm start --prefix tunnel-server
+   ```
+   The tunnel server will be available at `http://localhost:9000`.
 
 ### How to Use
 
@@ -198,20 +208,37 @@ curl -X POST http://localhost:8080/api/login \
 # All responses are automatically logged
 ```
 
-### 2. **Bug Reporting**
+### 2. **Live Tunneling (NEW!)**
+```bash
+# Expose your local API to the internet
+# 1. Create tunnel via UI at http://localhost:5173/tunnels
+# 2. Connect tunnel client:
+cd tunnel-client
+node client.js <tunnelId> <subdomain> 3000 <authToken> <userId>
+
+# 3. Your local API is now public:
+curl https://myapi.tunnel.arm.dev/api/users
+```
+
+### 3. **Bug Reporting**
 - Capture the exact API response that caused a bug
 - Share the link with your team
 - Everyone can see the exact request/response that failed
 
-### 3. **API Documentation**
+### 4. **API Documentation**
 - Capture real API responses as examples
 - Share with frontend developers
 - Show actual response structures
 
-### 4. **Client Demos**
+### 5. **Client Demos**
 - Capture API responses during development
 - Share with clients to show progress
 - No need to give them access to your backend
+
+### 6. **Webhook Testing**
+- Expose local server for webhook testing
+- Test webhooks from external services
+- Debug webhook payloads in real-time
 
 ## Troubleshooting
 
@@ -229,6 +256,18 @@ curl -X POST http://localhost:8080/api/login \
 - Check the proxy server logs for errors
 - Verify the API Response Manager backend is running on port 5000
 - Ensure PROJECT_ID is a valid MongoDB ObjectId
+
+**Q: Tunnel not connecting**
+- Verify tunnel server is running on port 9000
+- Check that local server is running on the specified port
+- Ensure WebSocket connections are allowed through firewall
+- Verify auth token and user ID are correct
+
+**Q: Tunnel requests failing**
+- Make sure test server/local API is running
+- Check tunnel client shows "Tunnel Active!" message
+- Verify subdomain matches in all commands
+- Check tunnel server and backend logs for errors
 
 ## Contributing
 
@@ -252,24 +291,36 @@ For issues, questions, or contributions, please open an issue on the GitHub repo
 
 ---
 
-**Version:** 2.0.3  <br>
-**Last Updated:** November 11, 2025 <br>
+**Version:** 2.1.0  <br>
+**Last Updated:** November 13, 2025 <br>
 **Author:** Vijay Singh Purohit <br>
 **Email:** <a href="mailto:vijaypurohit322@gmail.com?">vijaypurohit322@gmail.com</a>
 
-## 🎉 What's New in v2.0.3
+## 🎉 What's New in v2.1.0
 
-- 🌓 Added full Dark/Light Theme support across the app
-  - Theme toggle with sun/moon icons
-  - Auto-detect system preference (prefers-color-scheme)
-  - Persists user choice via localStorage
-- 📱 Mobile sidebar improved
-  - Theme toggle and Logout placed together in a bottom fixed bar
-  - Cleaner navigation list without oversized controls
-- 🎯 Navbar and active states refined for dark mode
-  - Better contrast and accessible indigo highlights
-- 🧩 Shared view and Auth pages updated
-  - Theme toggle added to Login/Signup and Shared Project pages
-- 🧱 Code blocks, forms, alerts and badges tuned for dark theme
-  - Proper background/foreground colors and borders
+### 🚇 Live Tunneling Service (Phase 1 Complete!)
+- **Expose Local APIs** - Public URLs for local development servers
+- **Custom Subdomains** - Choose your own or auto-generate
+- **WebSocket Tunneling** - Real-time bidirectional communication with auto-reconnect
+- **Rate Limiting** - Configurable per tunnel (default 60 req/min)
+- **Security Features** - IP whitelisting, Basic auth, Token auth
+- **SSL/TLS Support** - Let's Encrypt integration with ssl-proxy.js
+- **Statistics Tracking** - Request count, bandwidth, uptime monitoring
+- **Complete UI** - Create, manage, and monitor tunnels from web interface
+- **Tunnel Expiration** - Auto-close tunnels after specified time
+- **Heartbeat Monitoring** - Keep-alive mechanism with auto-cleanup
+
+### 🌓 Dark/Light Theme (v2.0.3)
+- Full theme support across the app
+- Theme toggle with sun/moon icons
+- Auto-detect system preference
+- Persists user choice via localStorage
+- Mobile sidebar improvements
+- Better contrast and accessibility
+
+### 📚 Documentation
+- Complete tunnel setup guide (TUNNEL_SETUP.md)
+- Phase 1 completion summary (PHASE1_COMPLETE.md)
+- Product roadmap (ROADMAP.md)
+- Updated README with tunnel features
 
