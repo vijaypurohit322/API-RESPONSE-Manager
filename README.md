@@ -1,5 +1,9 @@
 # API Response Manager
 
+[![npm version](https://badge.fury.io/js/@vijaypurohit322-arm%2Fcli.svg)](https://www.npmjs.com/package/@vijaypurohit322-arm/cli)
+[![npm downloads](https://img.shields.io/npm/dm/@vijaypurohit322-arm/cli.svg)](https://www.npmjs.com/package/@vijaypurohit322-arm/cli)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 An interactive tool for developers to capture, share, and collaborate on API responses. Share your API testing results with team members using unique project links - no login required for viewers.
 
 Demo SVG: <a>https://drive.google.com/uc?export=view&id=12eR09C2PcgCbvThRKtoSwpdEBfOa1eTb </a>
@@ -200,8 +204,7 @@ See [cli/README.md](cli/README.md) for complete CLI documentation.
 
 7. **View Captured Responses:**
    - Go to your project in the API Response Manager
-   - Click on the project to see all captured API responses
-   - Click on any response to view full details (request/response body, headers, status)
+   - View all captured API responses with details (request/response body, headers, status)
 
 8. **Share with Your Team:**
    - Click "Copy Share Link" button in the project detail page
