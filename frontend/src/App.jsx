@@ -9,6 +9,8 @@ import ProjectDetailPage from './pages/ProjectDetailPage';
 import SharedProjectPage from './pages/SharedProjectPage';
 import TunnelsPage from './pages/TunnelsPage';
 import TunnelDetailPage from './pages/TunnelDetailPage';
+import WebhooksPage from './pages/WebhooksPage';
+import WebhookDetailPage from './pages/WebhookDetailPage';
 import './App.css';
 
 const App = () => {
@@ -35,6 +37,14 @@ const App = () => {
         <Route
           path="/tunnels/:id"
           element={currentUser ? <TunnelDetailPage /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/webhooks"
+          element={currentUser ? <WebhooksPage /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/webhooks/:id"
+          element={currentUser ? <WebhookDetailPage /> : <Navigate to="/login" />}
         />
         <Route
           path="/"

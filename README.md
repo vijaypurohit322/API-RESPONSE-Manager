@@ -19,6 +19,7 @@ Demo SVG: <a>https://drive.google.com/uc?export=view&id=12eR09C2PcgCbvThRKtoSwpd
 - **🌓 Dark/Light Theme:** Theme toggle with system auto-detect and persisted preference
 - **🔄 Auto-redirect:** Automatic logout and redirect on session expiry
 - **🚇 Live Tunneling:** Expose local APIs to the internet with secure public URLs (like ngrok/Tunnelmole)
+- **🪝 Webhook Testing:** Instant webhook URLs with request logging, forwarding, and replay functionality
 
 ## Tech Stack
 
@@ -235,10 +236,13 @@ curl https://myapi.tunnel.arm.dev/api/users
 - Share with clients to show progress
 - No need to give them access to your backend
 
-### 6. **Webhook Testing**
-- Expose local server for webhook testing
-- Test webhooks from external services
-- Debug webhook payloads in real-time
+### 6. **Webhook Testing & Development**
+- Generate instant webhook URLs for testing
+- Capture and inspect all incoming webhook requests
+- Forward webhooks to local development servers
+- Replay captured webhooks for debugging
+- View complete request history with filtering
+- Test webhooks from GitHub, Stripe, Twilio, etc.
 
 ## Troubleshooting
 
@@ -269,6 +273,12 @@ curl https://myapi.tunnel.arm.dev/api/users
 - Verify subdomain matches in all commands
 - Check tunnel server and backend logs for errors
 
+**Q: Webhook not forwarding**
+- Verify forwarding is enabled when creating webhook
+- Check that tunnel is active if forwarding to tunnel
+- Ensure local server is running on the specified port
+- View webhook detail page to see forwarding errors
+
 ## Contributing
 
 1. Fork the repository
@@ -291,12 +301,24 @@ For issues, questions, or contributions, please open an issue on the GitHub repo
 
 ---
 
-**Version:** 2.1.0  <br>
-**Last Updated:** November 13, 2025 <br>
+**Version:** 2.2.0  <br>
+**Last Updated:** November 14, 2025 <br>
 **Author:** Vijay Singh Purohit <br>
 **Email:** <a href="mailto:vijaypurohit322@gmail.com?">vijaypurohit322@gmail.com</a>
 
-## 🎉 What's New in v2.1.0
+## 🎉 What's New in v2.2.0
+
+### 🪝 Webhook Testing Suite (Phase 2 Complete!)
+- **Instant Webhook URLs** - Generate unique webhook endpoints instantly
+- **Automatic Request Logging** - Capture all incoming webhook requests with full details
+- **Webhook Forwarding** - Forward webhooks to local servers via tunnels or direct URLs
+- **Request History** - View all webhook requests with filtering by status
+- **Replay Functionality** - Resend captured webhooks for testing
+- **Statistics Dashboard** - Track total requests, forwarded, failed, and success rate
+- **Beautiful UI** - Professional modal design with sectioned layout
+- **Flexible Configuration** - Enable/disable forwarding, set expiration, choose targets
+- **Request Inspection** - View headers, body, and forwarding results in detail
+- **Status Tracking** - Monitor received, forwarded, failed, and replayed requests
 
 ### 🚇 Live Tunneling Service (Phase 1 Complete!)
 - **Expose Local APIs** - Public URLs for local development servers
@@ -319,8 +341,11 @@ For issues, questions, or contributions, please open an issue on the GitHub repo
 - Better contrast and accessibility
 
 ### 📚 Documentation
-- Complete tunnel setup guide (TUNNEL_SETUP.md)
-- Phase 1 completion summary (PHASE1_COMPLETE.md)
+- Complete setup guide (SETUP_GUIDE.md)
+- Tunnel setup guide (TUNNEL_SETUP.md)
+- API documentation
+- Troubleshooting guide
 - Product roadmap (ROADMAP.md)
+- Release notes (RELEASE_NOTES.md)
+- Phase 1 completion summary (PHASE1_COMPLETE.md)
 - Updated README with tunnel features
-

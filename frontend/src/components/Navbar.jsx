@@ -20,6 +20,9 @@ const Navbar = () => {
     if (path === '/tunnels') {
       return location.pathname === '/tunnels' || location.pathname.startsWith('/tunnels/');
     }
+    if (path === '/webhooks') {
+      return location.pathname === '/webhooks' || location.pathname.startsWith('/webhooks/');
+    }
     return location.pathname === path;
   };
 
@@ -89,6 +92,15 @@ const Navbar = () => {
             </Link>
           </li>
           <li>
+            <Link to="/webhooks" className={isActive('/webhooks') ? 'active' : ''}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/>
+                <line x1="4" y1="22" x2="4" y2="15"/>
+              </svg>
+              <span>Webhooks</span>
+            </Link>
+          </li>
+          <li>
             <ThemeToggle />
           </li>
           <li>
@@ -143,6 +155,15 @@ const Navbar = () => {
                   <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
                 </svg>
                 <span>Tunnels</span>
+              </Link>
+            </li>
+            <li>
+              <Link to="/webhooks" className={isActive('/webhooks') ? 'active' : ''} onClick={closeMobileMenu}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/>
+                  <line x1="4" y1="22" x2="4" y2="15"/>
+                </svg>
+                <span>Webhooks</span>
               </Link>
             </li>
           </ul>
