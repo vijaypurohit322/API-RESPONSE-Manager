@@ -6,7 +6,7 @@ Command-line interface for API Response Manager. Manage tunnels, webhooks, and p
 
 ### Option 1: Install from npm (Recommended)
 ```bash
-npm install -g @arm/cli
+npm install -g @vijaypurohit322-arm/cli
 ```
 
 After installation, verify:
@@ -33,9 +33,9 @@ arm --version
 
 ### Option 3: Use with npx (No Installation)
 ```bash
-npx @arm/cli login
-npx @arm/cli tunnel 3000
-npx @arm/cli webhook
+npx @vijaypurohit322-arm/cli login
+npx @vijaypurohit322-arm/cli tunnel 3000
+npx @vijaypurohit322-arm/cli webhook
 ```
 
 ## Quick Start
@@ -326,6 +326,28 @@ arm config:set apiUrl https://your-api-url.com/api
 ### View All Configuration
 ```bash
 arm config:get
+```
+
+## Troubleshooting
+
+### Command Not Found After Installation
+
+If you get `arm: command not found` after installing:
+
+**Windows:**
+1. Check npm prefix: `npm config get prefix`
+2. Add to PATH: `C:\Users\<YourUsername>\AppData\Roaming\npm`
+3. Restart terminal
+
+**macOS/Linux:**
+```bash
+echo 'export PATH="$(npm config get prefix)/bin:$PATH"' >> ~/.bashrc
+source ~/.bashrc
+```
+
+**Alternative - Use npx:**
+```bash
+npx @vijaypurohit322-arm/cli login
 ```
 
 ## Publishing to npm

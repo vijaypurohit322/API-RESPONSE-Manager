@@ -1,10 +1,10 @@
 {
-  "name": "@arm/cli",
-  "version": "1.0.0",
+  "name": "api-response-manager",
+  "version": "1.0.1",
   "description": "Command-line interface for API Response Manager",
   "main": "index.js",
   "bin": {
-    "arm": "./bin/arm.js"
+    "arm": "bin/arm.js"
   },
   "scripts": {
     "test": "jest",
@@ -21,17 +21,17 @@
   "author": "Vijay Singh Purohit",
   "license": "MIT",
   "dependencies": {
-    "commander": "^11.1.0",
     "axios": "^1.6.2",
+    "boxen": "^5.1.2",
     "chalk": "^4.1.2",
+    "cli-table3": "^0.6.3",
+    "commander": "^11.1.0",
+    "conf": "^10.2.0",
+    "dotenv": "^16.3.1",
     "inquirer": "^8.2.5",
     "ora": "^5.4.1",
-    "ws": "^8.14.2",
-    "dotenv": "^16.3.1",
-    "conf": "^10.2.0",
-    "boxen": "^5.1.2",
-    "cli-table3": "^0.6.3",
-    "update-notifier": "^6.0.2"
+    "update-notifier": "^6.0.2",
+    "ws": "^8.14.2"
   },
   "devDependencies": {
     "jest": "^29.7.0"
