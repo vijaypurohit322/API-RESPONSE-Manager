@@ -7,6 +7,8 @@ import HomePage from './pages/HomePage';
 import ProjectPage from './pages/ProjectPage';
 import ProjectDetailPage from './pages/ProjectDetailPage';
 import SharedProjectPage from './pages/SharedProjectPage';
+import TunnelsPage from './pages/TunnelsPage';
+import TunnelDetailPage from './pages/TunnelDetailPage';
 import './App.css';
 
 const App = () => {
@@ -25,6 +27,14 @@ const App = () => {
         <Route
           path="/projects/:id"
           element={currentUser ? <ProjectDetailPage /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/tunnels"
+          element={currentUser ? <TunnelsPage /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/tunnels/:id"
+          element={currentUser ? <TunnelDetailPage /> : <Navigate to="/login" />}
         />
         <Route
           path="/"

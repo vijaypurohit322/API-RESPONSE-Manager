@@ -1,0 +1,28 @@
+{
+  "name": "@arm/tunnel-client",
+  "version": "1.0.0",
+  "description": "Tunnel client for API Response Manager - connects local servers to public URLs",
+  "main": "client.js",
+  "bin": {
+    "arm-tunnel": "./client.js"
+  },
+  "scripts": {
+    "start": "node client.js"
+  },
+  "keywords": [
+    "tunnel",
+    "ngrok",
+    "tunnelmole",
+    "client",
+    "proxy"
+  ],
+  "author": "Vijay Singh Purohit",
+  "license": "MIT",
+  "dependencies": {
+    "ws": "^8.14.2",
+    "axios": "^1.6.0"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

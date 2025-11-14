@@ -1,0 +1,160 @@
+const mongoose = require('mongoose');
+
+const tunnelSchema = new mongoose.Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+    index: true
+  },
+  projectId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Project',
+    required: false
+  },
+  subdomain: {
+    type: String,
+    required: true,
+    unique: true,
+    lowercase: true,
+    trim: true,
+    match: /^[a-z0-9-]+$/,
+    index: true
+  },
+  localPort: {
+    type: Number,
+    required: true,
+    min: 1,
+    max: 65535
+  },
+  status: {
+    type: String,
+    enum: ['active', 'inactive', 'error', 'connecting'],
+    default: 'connecting',
+    index: true
+  },
+  publicUrl: {
+    type: String,
+    required: true
+  },
+  connectionId: {
+    type: String,
+    required: false,
+    index: true
+  },
+  lastHeartbeat: {
+    type: Date,
+    default: Date.now
+  },
+  requestCount: {
+    type: Number,
+    default: 0
+  },
+  bytesTransferred: {
+    type: Number,
+    default: 0
+  },
+  rateLimit: {
+    requestsPerMinute: {
+      type: Number,
+      default: 60
+    },
+    enabled: {
+      type: Boolean,
+      default: true
+    }
+  },
+  authentication: {
+    enabled: {
+      type: Boolean,
+      default: false
+    },
+    type: {
+      type: String,
+      enum: ['none', 'basic', 'token'],
+      default: 'none'
+    },
+    token: {
+      type: String,
+      required: false
+    },
+    username: {
+      type: String,
+      required: false
+    },
+    password: {
+      type: String,
+      required: false
+    }
+  },
+  ipWhitelist: [{
+    type: String,
+    trim: true
+  }],
+  metadata: {
+    userAgent: String,
+    clientVersion: String,
+    os: String
+  },
+  expiresAt: {
+    type: Date,
+    required: false
+  }
+}, {
+  timestamps: true
+});
+
+// Index for cleanup of expired tunnels
+tunnelSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
+
+// Index for finding active tunnels
+tunnelSchema.index({ userId: 1, status: 1 });
+
+// Virtual for checking if tunnel is expired
+tunnelSchema.virtual('isExpired').get(function() {
+  return this.expiresAt && this.expiresAt < new Date();
+});
+
+// Virtual for checking if tunnel is stale (no heartbeat in 30 seconds)
+tunnelSchema.virtual('isStale').get(function() {
+  const thirtySecondsAgo = new Date(Date.now() - 30000);
+  return this.lastHeartbeat < thirtySecondsAgo;
+});
+
+// Method to update heartbeat
+tunnelSchema.methods.heartbeat = function() {
+  this.lastHeartbeat = new Date();
+  return this.save();
+};
+
+// Method to increment request count
+tunnelSchema.methods.incrementRequests = function(bytes = 0) {
+  this.requestCount += 1;
+  this.bytesTransferred += bytes;
+  return this.save();
+};
+
+// Static method to find active tunnel by subdomain
+tunnelSchema.statics.findActiveBySubdomain = function(subdomain) {
+  return this.findOne({ 
+    subdomain: subdomain.toLowerCase(), 
+    status: 'active' 
+  });
+};
+
+// Static method to cleanup stale tunnels
+tunnelSchema.statics.cleanupStaleTunnels = async function() {
+  const thirtySecondsAgo = new Date(Date.now() - 30000);
+  const result = await this.updateMany(
+    { 
+      status: 'active',
+      lastHeartbeat: { $lt: thirtySecondsAgo }
+    },
+    { 
+      status: 'inactive' 
+    }
+  );
+  return result;
+};
+
+module.exports = mongoose.model('Tunnel', tunnelSchema);
