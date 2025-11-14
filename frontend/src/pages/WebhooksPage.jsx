@@ -20,7 +20,22 @@ const WebhooksPage = () => {
     targetType: 'none',
     tunnelId: '',
     targetUrl: '',
-    expiresIn: 86400 // 24 hours default
+    expiresIn: 86400, // 24 hours default
+    signatureEnabled: false,
+    signatureAlgorithm: 'sha256',
+    signatureSecret: '',
+    signatureHeader: 'x-hub-signature-256',
+    // Notifications
+    slackEnabled: false,
+    slackWebhookUrl: '',
+    slackChannel: '',
+    slackEvents: ['received', 'forwarded', 'failed'],
+    discordEnabled: false,
+    discordWebhookUrl: '',
+    discordEvents: ['received', 'forwarded', 'failed'],
+    emailEnabled: false,
+    emailRecipients: '',
+    emailEvents: ['received', 'forwarded', 'failed']
   });
 
   useEffect(() => {
@@ -72,6 +87,46 @@ const WebhooksPage = () => {
         };
       }
 
+      if (formData.signatureEnabled) {
+        webhookData.security = {
+          signatureValidation: {
+            enabled: true,
+            algorithm: formData.signatureAlgorithm,
+            secret: formData.signatureSecret,
+            headerName: formData.signatureHeader,
+            encoding: 'hex'
+          }
+        };
+      }
+
+      // Add notifications
+      const notifications = {};
+      if (formData.slackEnabled) {
+        notifications.slack = {
+          enabled: true,
+          webhookUrl: formData.slackWebhookUrl,
+          channel: formData.slackChannel,
+          events: formData.slackEvents
+        };
+      }
+      if (formData.discordEnabled) {
+        notifications.discord = {
+          enabled: true,
+          webhookUrl: formData.discordWebhookUrl,
+          events: formData.discordEvents
+        };
+      }
+      if (formData.emailEnabled) {
+        notifications.email = {
+          enabled: true,
+          recipients: formData.emailRecipients.split(',').map(e => e.trim()),
+          events: formData.emailEvents
+        };
+      }
+      if (Object.keys(notifications).length > 0) {
+        webhookData.notifications = notifications;
+      }
+
       const result = await webhookService.createWebhook(webhookData);
       
       setSuccess(`Webhook created! URL: ${result.webhook.webhookUrl}`);
@@ -83,7 +138,21 @@ const WebhooksPage = () => {
         targetType: 'none',
         tunnelId: '',
         targetUrl: '',
-        expiresIn: 86400
+        expiresIn: 86400,
+        signatureEnabled: false,
+        signatureAlgorithm: 'sha256',
+        signatureSecret: '',
+        signatureHeader: 'x-hub-signature-256',
+        slackEnabled: false,
+        slackWebhookUrl: '',
+        slackChannel: '',
+        slackEvents: ['received', 'forwarded', 'failed'],
+        discordEnabled: false,
+        discordWebhookUrl: '',
+        discordEvents: ['received', 'forwarded', 'failed'],
+        emailEnabled: false,
+        emailRecipients: '',
+        emailEvents: ['received', 'forwarded', 'failed']
       });
       loadWebhooks();
     } catch (error) {
@@ -464,6 +533,195 @@ const WebhooksPage = () => {
                     <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)', marginTop: '0.5rem' }}>
                       The webhook URL will automatically expire after this duration
                     </p>
+                  </div>
+                </div>
+
+                {/* Security Section */}
+                <div style={{ 
+                  marginBottom: '1.5rem',
+                  padding: '1.5rem',
+                  backgroundColor: 'var(--bg-color)',
+                  borderRadius: '0.5rem'
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1rem' }}>
+                    <input
+                      type="checkbox"
+                      id="signature"
+                      checked={formData.signatureEnabled}
+                      onChange={(e) => setFormData({ ...formData, signatureEnabled: e.target.checked })}
+                      style={{ marginRight: '0.75rem', width: '18px', height: '18px', cursor: 'pointer' }}
+                    />
+                    <label htmlFor="signature" style={{ fontSize: 'var(--font-size-lg)', fontWeight: 'var(--font-weight-semibold)', cursor: 'pointer', margin: 0 }}>
+                      🔐 Enable Signature Validation
+                    </label>
+                  </div>
+                  
+                  <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)', marginBottom: '1rem' }}>
+                    Verify webhook authenticity using HMAC signatures (like GitHub, Stripe)
+                  </p>
+
+                  {formData.signatureEnabled && (
+                    <div style={{ 
+                      paddingTop: '1rem',
+                      borderTop: '1px solid var(--border-color)'
+                    }}>
+                      <div style={{ marginBottom: '1rem' }}>
+                        <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'var(--font-weight-medium)' }}>
+                          Algorithm
+                        </label>
+                        <select
+                          value={formData.signatureAlgorithm}
+                          onChange={(e) => setFormData({ ...formData, signatureAlgorithm: e.target.value })}
+                          style={{ width: '100%' }}
+                        >
+                          <option value="sha1">SHA-1 (GitHub legacy)</option>
+                          <option value="sha256">SHA-256 (recommended)</option>
+                          <option value="sha512">SHA-512</option>
+                        </select>
+                      </div>
+
+                      <div style={{ marginBottom: '1rem' }}>
+                        <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'var(--font-weight-medium)' }}>
+                          Secret Key *
+                        </label>
+                        <input
+                          type="text"
+                          value={formData.signatureSecret}
+                          onChange={(e) => setFormData({ ...formData, signatureSecret: e.target.value })}
+                          placeholder="Enter your webhook secret"
+                          required={formData.signatureEnabled}
+                          style={{ width: '100%' }}
+                        />
+                        <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)', marginTop: '0.5rem' }}>
+                          This secret will be used to validate webhook signatures
+                        </p>
+                      </div>
+
+                      <div>
+                        <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'var(--font-weight-medium)' }}>
+                          Signature Header Name
+                        </label>
+                        <input
+                          type="text"
+                          value={formData.signatureHeader}
+                          onChange={(e) => setFormData({ ...formData, signatureHeader: e.target.value })}
+                          placeholder="x-hub-signature-256"
+                          style={{ width: '100%' }}
+                        />
+                        <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)', marginTop: '0.5rem' }}>
+                          Header name where signature will be sent (e.g., x-hub-signature-256 for GitHub)
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Notifications Section */}
+                <div style={{ 
+                  marginBottom: '1.5rem',
+                  padding: '1.5rem',
+                  backgroundColor: 'var(--bg-color)',
+                  borderRadius: '0.5rem'
+                }}>
+                  <h3 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 'var(--font-weight-semibold)', marginBottom: '1rem' }}>
+                    📢 Notifications
+                  </h3>
+                  <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)', marginBottom: '1rem' }}>
+                    Get notified when webhooks are received, forwarded, or fail
+                  </p>
+
+                  {/* Slack */}
+                  <div style={{ marginBottom: '1rem', paddingBottom: '1rem', borderBottom: '1px solid var(--border-color)' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: '0.5rem' }}>
+                      <input
+                        type="checkbox"
+                        id="slack"
+                        checked={formData.slackEnabled}
+                        onChange={(e) => setFormData({ ...formData, slackEnabled: e.target.checked })}
+                        style={{ marginRight: '0.5rem', cursor: 'pointer' }}
+                      />
+                      <label htmlFor="slack" style={{ fontWeight: 'var(--font-weight-medium)', cursor: 'pointer', margin: 0 }}>
+                        💬 Slack
+                      </label>
+                    </div>
+                    {formData.slackEnabled && (
+                      <div style={{ marginLeft: '1.5rem' }}>
+                        <input
+                          type="url"
+                          value={formData.slackWebhookUrl}
+                          onChange={(e) => setFormData({ ...formData, slackWebhookUrl: e.target.value })}
+                          placeholder="https://hooks.slack.com/services/..."
+                          required={formData.slackEnabled}
+                          style={{ width: '100%', marginBottom: '0.5rem' }}
+                        />
+                        <input
+                          type="text"
+                          value={formData.slackChannel}
+                          onChange={(e) => setFormData({ ...formData, slackChannel: e.target.value })}
+                          placeholder="#channel-name (optional)"
+                          style={{ width: '100%' }}
+                        />
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Discord */}
+                  <div style={{ marginBottom: '1rem', paddingBottom: '1rem', borderBottom: '1px solid var(--border-color)' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: '0.5rem' }}>
+                      <input
+                        type="checkbox"
+                        id="discord"
+                        checked={formData.discordEnabled}
+                        onChange={(e) => setFormData({ ...formData, discordEnabled: e.target.checked })}
+                        style={{ marginRight: '0.5rem', cursor: 'pointer' }}
+                      />
+                      <label htmlFor="discord" style={{ fontWeight: 'var(--font-weight-medium)', cursor: 'pointer', margin: 0 }}>
+                        🎮 Discord
+                      </label>
+                    </div>
+                    {formData.discordEnabled && (
+                      <div style={{ marginLeft: '1.5rem' }}>
+                        <input
+                          type="url"
+                          value={formData.discordWebhookUrl}
+                          onChange={(e) => setFormData({ ...formData, discordWebhookUrl: e.target.value })}
+                          placeholder="https://discord.com/api/webhooks/..."
+                          required={formData.discordEnabled}
+                          style={{ width: '100%' }}
+                        />
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Email */}
+                  <div>
+                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: '0.5rem' }}>
+                      <input
+                        type="checkbox"
+                        id="email"
+                        checked={formData.emailEnabled}
+                        onChange={(e) => setFormData({ ...formData, emailEnabled: e.target.checked })}
+                        style={{ marginRight: '0.5rem', cursor: 'pointer' }}
+                      />
+                      <label htmlFor="email" style={{ fontWeight: 'var(--font-weight-medium)', cursor: 'pointer', margin: 0 }}>
+                        📧 Email
+                      </label>
+                    </div>
+                    {formData.emailEnabled && (
+                      <div style={{ marginLeft: '1.5rem' }}>
+                        <input
+                          type="text"
+                          value={formData.emailRecipients}
+                          onChange={(e) => setFormData({ ...formData, emailRecipients: e.target.value })}
+                          placeholder="email1@example.com, email2@example.com"
+                          required={formData.emailEnabled}
+                          style={{ width: '100%' }}
+                        />
+                        <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)', marginTop: '0.5rem' }}>
+                          Comma-separated email addresses
+                        </p>
+                      </div>
+                    )}
                   </div>
                 </div>
 

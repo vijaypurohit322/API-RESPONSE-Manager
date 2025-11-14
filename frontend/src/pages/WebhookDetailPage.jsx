@@ -15,6 +15,12 @@ const WebhookDetailPage = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [filter, setFilter] = useState('all');
+  const [editMode, setEditMode] = useState(false);
+  const [editedRequest, setEditedRequest] = useState({
+    headers: {},
+    body: {},
+    method: 'POST'
+  });
 
   useEffect(() => {
     loadWebhookData();
@@ -54,6 +60,27 @@ const WebhookDetailPage = () => {
       loadWebhookData();
     } catch (error) {
       setError('Failed to replay webhook');
+    }
+  };
+
+  const handleEdit = (request) => {
+    setEditedRequest({
+      headers: request.headers || {},
+      body: request.body || {},
+      method: request.method || 'POST'
+    });
+    setEditMode(true);
+    setSelectedRequest(request);
+  };
+
+  const handleResend = async () => {
+    try {
+      await webhookService.resendWebhookRequest(id, selectedRequest._id, editedRequest);
+      setSuccess('Modified webhook sent successfully');
+      setEditMode(false);
+      loadWebhookData();
+    } catch (error) {
+      setError('Failed to resend webhook');
     }
   };
 
@@ -317,16 +344,28 @@ const WebhookDetailPage = () => {
                         </span>
                       )}
                     </div>
-                    <button 
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleReplay(request._id);
-                      }}
-                      className="btn btn-secondary"
-                      style={{ fontSize: 'var(--font-size-sm)' }}
-                    >
-                      Replay
-                    </button>
+                    <div style={{ display: 'flex', gap: '0.5rem' }}>
+                      <button 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleEdit(request);
+                        }}
+                        className="btn btn-primary"
+                        style={{ fontSize: 'var(--font-size-sm)' }}
+                      >
+                        Edit & Resend
+                      </button>
+                      <button 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleReplay(request._id);
+                        }}
+                        className="btn btn-secondary"
+                        style={{ fontSize: 'var(--font-size-sm)' }}
+                      >
+                        Replay
+                      </button>
+                    </div>
                   </div>
 
                   {selectedRequest?._id === request._id && (
@@ -401,6 +440,110 @@ const WebhookDetailPage = () => {
             Delete Webhook
           </button>
         </div>
+
+        {/* Edit Request Modal */}
+        {editMode && selectedRequest && (
+          <div className="modal-overlay" onClick={() => setEditMode(false)}>
+            <div className="modal-content" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '700px', maxHeight: '90vh', overflow: 'auto' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+                <h2 style={{ margin: 0, fontSize: 'var(--font-size-2xl)', fontWeight: 'var(--font-weight-bold)' }}>
+                  ✏️ Edit & Resend Request
+                </h2>
+                <button 
+                  onClick={() => setEditMode(false)}
+                  style={{ 
+                    background: 'none', 
+                    border: 'none', 
+                    fontSize: '1.5rem', 
+                    cursor: 'pointer',
+                    color: 'var(--text-secondary)',
+                    padding: '0.25rem'
+                  }}
+                >
+                  ×
+                </button>
+              </div>
+
+              <div style={{ marginBottom: '1rem' }}>
+                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'var(--font-weight-medium)' }}>
+                  HTTP Method
+                </label>
+                <select
+                  value={editedRequest.method}
+                  onChange={(e) => setEditedRequest({ ...editedRequest, method: e.target.value })}
+                  style={{ width: '100%' }}
+                >
+                  <option value="GET">GET</option>
+                  <option value="POST">POST</option>
+                  <option value="PUT">PUT</option>
+                  <option value="PATCH">PATCH</option>
+                  <option value="DELETE">DELETE</option>
+                </select>
+              </div>
+
+              <div style={{ marginBottom: '1rem' }}>
+                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'var(--font-weight-medium)' }}>
+                  Headers (JSON)
+                </label>
+                <textarea
+                  value={JSON.stringify(editedRequest.headers, null, 2)}
+                  onChange={(e) => {
+                    try {
+                      setEditedRequest({ ...editedRequest, headers: JSON.parse(e.target.value) });
+                    } catch (err) {
+                      // Invalid JSON, keep editing
+                    }
+                  }}
+                  rows="8"
+                  style={{ 
+                    width: '100%', 
+                    fontFamily: 'monospace',
+                    fontSize: 'var(--font-size-sm)'
+                  }}
+                />
+              </div>
+
+              <div style={{ marginBottom: '1.5rem' }}>
+                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'var(--font-weight-medium)' }}>
+                  Body (JSON)
+                </label>
+                <textarea
+                  value={JSON.stringify(editedRequest.body, null, 2)}
+                  onChange={(e) => {
+                    try {
+                      setEditedRequest({ ...editedRequest, body: JSON.parse(e.target.value) });
+                    } catch (err) {
+                      // Invalid JSON, keep editing
+                    }
+                  }}
+                  rows="12"
+                  style={{ 
+                    width: '100%', 
+                    fontFamily: 'monospace',
+                    fontSize: 'var(--font-size-sm)'
+                  }}
+                />
+              </div>
+
+              <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end' }}>
+                <button 
+                  onClick={() => setEditMode(false)}
+                  className="btn btn-secondary"
+                  style={{ minWidth: '100px' }}
+                >
+                  Cancel
+                </button>
+                <button 
+                  onClick={handleResend}
+                  className="btn btn-primary"
+                  style={{ minWidth: '150px' }}
+                >
+                  Send Modified Request
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

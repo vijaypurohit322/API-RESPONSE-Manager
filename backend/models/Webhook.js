@@ -41,25 +41,44 @@ const webhookSchema = new mongoose.Schema({
       type: Boolean,
       default: false
     },
-    // Forward to tunnel or direct URL
     targetType: {
       type: String,
-      enum: ['tunnel', 'url', 'none'],
+      enum: ['none', 'tunnel', 'url', 'multiple'],
       default: 'none'
     },
-    // Tunnel ID if forwarding to tunnel
+    // Single destination (legacy)
     tunnelId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Tunnel'
     },
-    // Direct URL if forwarding to URL
     targetUrl: {
       type: String
     },
-    // Forward timeout in ms
+    // Multiple destinations
+    destinations: [{
+      type: {
+        type: String,
+        enum: ['tunnel', 'url'],
+        required: true
+      },
+      tunnelId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Tunnel'
+      },
+      url: {
+        type: String
+      },
+      name: {
+        type: String
+      },
+      enabled: {
+        type: Boolean,
+        default: true
+      }
+    }],
     timeout: {
       type: Number,
-      default: 30000
+      default: 30000 // 30 seconds
     }
   },
   // Security settings
@@ -72,21 +91,46 @@ const webhookSchema = new mongoose.Schema({
     // Authentication type
     authType: {
       type: String,
-      enum: ['none', 'token', 'signature'],
+      enum: ['none', 'token', 'basic'],
       default: 'none'
     },
     // Auth token
     authToken: {
       type: String
     },
-    // Signature secret for validation
-    signatureSecret: {
-      type: String
+    // Basic auth
+    basicAuth: {
+      username: String,
+      password: String
     },
     // IP whitelist
     ipWhitelist: [{
       type: String
-    }]
+    }],
+    // Signature validation
+    signatureValidation: {
+      enabled: {
+        type: Boolean,
+        default: false
+      },
+      algorithm: {
+        type: String,
+        enum: ['sha1', 'sha256', 'sha512'],
+        default: 'sha256'
+      },
+      secret: {
+        type: String
+      },
+      headerName: {
+        type: String,
+        default: 'x-hub-signature-256' // GitHub style
+      },
+      encoding: {
+        type: String,
+        enum: ['hex', 'base64'],
+        default: 'hex'
+      }
+    }
   },
   // Request filtering
   filters: {
@@ -100,6 +144,85 @@ const webhookSchema = new mongoose.Schema({
     allowedContentTypes: [{
       type: String
     }]
+  },
+  // Conditional forwarding rules
+  forwardingRules: [{
+    name: String,
+    enabled: {
+      type: Boolean,
+      default: true
+    },
+    conditions: [{
+      field: String, // e.g., 'body.event', 'headers.x-event-type'
+      operator: {
+        type: String,
+        enum: ['equals', 'contains', 'startsWith', 'endsWith', 'regex', 'exists', 'greaterThan', 'lessThan']
+      },
+      value: mongoose.Schema.Types.Mixed
+    }],
+    action: {
+      type: String,
+      enum: ['forward', 'skip', 'transform'],
+      default: 'forward'
+    },
+    destinations: [{
+      type: String // Destination names to forward to
+    }]
+  }],
+  // Payload transformation
+  transformation: {
+    enabled: {
+      type: Boolean,
+      default: false
+    },
+    mappings: [{
+      from: String, // Source field path
+      to: String,   // Destination field path
+      transform: String // Optional: 'uppercase', 'lowercase', 'trim', 'json', 'base64'
+    }],
+    template: String, // JSON template for complete transformation
+    removeFields: [String], // Fields to remove
+    addFields: [{
+      path: String,
+      value: mongoose.Schema.Types.Mixed
+    }]
+  },
+  // Notifications
+  notifications: {
+    slack: {
+      enabled: {
+        type: Boolean,
+        default: false
+      },
+      webhookUrl: String,
+      channel: String,
+      events: [{
+        type: String,
+        enum: ['received', 'forwarded', 'failed']
+      }]
+    },
+    discord: {
+      enabled: {
+        type: Boolean,
+        default: false
+      },
+      webhookUrl: String,
+      events: [{
+        type: String,
+        enum: ['received', 'forwarded', 'failed']
+      }]
+    },
+    email: {
+      enabled: {
+        type: Boolean,
+        default: false
+      },
+      recipients: [String],
+      events: [{
+        type: String,
+        enum: ['received', 'forwarded', 'failed']
+      }]
+    }
   },
   // Statistics
   stats: {

@@ -77,6 +77,12 @@ const replayWebhookRequest = async (webhookId, requestId) => {
   return response.data;
 };
 
+// Resend webhook request with modifications
+const resendWebhookRequest = async (webhookId, requestId, modifications) => {
+  const response = await axiosInstance.post(`/${webhookId}/requests/${requestId}/resend`, modifications);
+  return response.data;
+};
+
 export default {
   createWebhook,
   getWebhooks,
@@ -86,5 +92,6 @@ export default {
   getWebhookStats,
   getWebhookRequests,
   getWebhookRequest,
-  replayWebhookRequest
+  replayWebhookRequest,
+  resendWebhookRequest
 };

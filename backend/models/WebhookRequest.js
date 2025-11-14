@@ -73,7 +73,16 @@ const webhookRequestSchema = new mongoose.Schema({
     },
     duration: {
       type: Number // milliseconds
-    }
+    },
+    // Multiple destination results
+    destinations: [{
+      name: String,
+      targetUrl: String,
+      success: Boolean,
+      statusCode: Number,
+      error: String,
+      duration: Number
+    }]
   },
   // Signature validation
   signature: {

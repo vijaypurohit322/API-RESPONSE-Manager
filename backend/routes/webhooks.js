@@ -48,4 +48,9 @@ router.get('/:id/requests/:requestId', auth, webhookController.getWebhookRequest
 // @access  Private
 router.post('/:id/requests/:requestId/replay', auth, webhookController.replayWebhookRequest);
 
+// @route   POST /api/webhooks/:id/requests/:requestId/resend
+// @desc    Resend webhook request with modifications
+// @access  Private
+router.post('/:id/requests/:requestId/resend', auth, webhookController.resendWebhookRequest);
+
 module.exports = router;

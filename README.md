@@ -19,7 +19,7 @@ Demo SVG: <a>https://drive.google.com/uc?export=view&id=12eR09C2PcgCbvThRKtoSwpd
 - **🌓 Dark/Light Theme:** Theme toggle with system auto-detect and persisted preference
 - **🔄 Auto-redirect:** Automatic logout and redirect on session expiry
 - **🚇 Live Tunneling:** Expose local APIs to the internet with secure public URLs (like ngrok/Tunnelmole)
-- **🪝 Webhook Testing:** Instant webhook URLs with request logging, forwarding, and replay functionality
+- **🪝 Webhook Testing:** Advanced webhook debugging with signature validation, conditional routing, payload transformation, and integrations (Slack, Discord, Email)
 
 ## Tech Stack
 
@@ -239,8 +239,13 @@ curl https://myapi.tunnel.arm.dev/api/users
 ### 6. **Webhook Testing & Development**
 - Generate instant webhook URLs for testing
 - Capture and inspect all incoming webhook requests
-- Forward webhooks to local development servers
+- Forward webhooks to local development servers or multiple destinations
+- Validate webhook signatures (HMAC SHA-1/256/512)
+- Edit and resend webhooks with modifications
+- Apply conditional routing rules based on payload content
+- Transform webhook payloads before forwarding
 - Replay captured webhooks for debugging
+- Get notifications via Slack, Discord, or Email
 - View complete request history with filtering
 - Test webhooks from GitHub, Stripe, Twilio, etc.
 
@@ -308,7 +313,46 @@ For issues, questions, or contributions, please open an issue on the GitHub repo
 
 ## 🎉 What's New in v2.2.0
 
-### 🪝 Webhook Testing Suite (Phase 2 Complete!)
+### 🪝 Webhook Testing Suite (Phase 2.1 & 2.2 Complete!)
+
+#### Phase 2.1 - Advanced Debugging & Testing
+- **🔐 HMAC Signature Validation** - Verify webhook authenticity with SHA-1/256/512
+  * Configurable algorithm, secret key, and header name
+  * GitHub/Stripe webhook compatibility
+  * Timing-safe signature comparison
+- **✏️ Request Modification & Resend** - Edit and replay webhooks with changes
+  * Modify headers, body, and HTTP method
+  * Interactive modal editor with JSON validation
+  * Track modified requests separately
+- **🎯 Multiple Destination Forwarding** - Forward to unlimited destinations simultaneously
+  * Support for both tunnels and URLs
+  * Individual success/failure tracking per destination
+  * Enable/disable destinations independently
+- **🔀 Conditional Forwarding Rules** - Route webhooks based on content
+  * Multiple operators: equals, contains, regex, startsWith, endsWith, exists, greaterThan, lessThan
+  * Nested field path support (body.event, headers.x-custom)
+  * Actions: forward, skip, or transform
+  * Route to specific destinations based on conditions
+- **🔄 Payload Transformation** - Transform webhook data before forwarding
+  * Field-to-field mapping with transformations
+  * Built-in transforms: uppercase, lowercase, trim, json, base64
+  * JSON template support for complete restructuring
+  * Add/remove fields dynamically
+
+#### Phase 2.2 - Integration & Automation
+- **💬 Slack Integration** - Real-time notifications to Slack channels
+  * Rich message formatting with attachments
+  * Configurable events (received, forwarded, failed)
+  * Color-coded status indicators
+- **🎮 Discord Integration** - Send notifications to Discord
+  * Embed messages with color coding
+  * Event filtering and timestamps
+- **📧 Email Alerts** - Email notification support
+  * Multiple recipient configuration
+  * Event-based triggers
+  * Ready for email service integration
+
+#### Phase 2.0 - Core Features
 - **Instant Webhook URLs** - Generate unique webhook endpoints instantly
 - **Automatic Request Logging** - Capture all incoming webhook requests with full details
 - **Webhook Forwarding** - Forward webhooks to local servers via tunnels or direct URLs
