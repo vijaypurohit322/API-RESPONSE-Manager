@@ -6,6 +6,8 @@ const projectRoutes = require('./routes/projects');
 const responseRoutes = require('./routes/responses');
 const commentRoutes = require('./routes/comments');
 const tunnelRoutes = require('./routes/tunnels');
+const webhookRoutes = require('./routes/webhooks');
+const webhookReceiverRoutes = require('./routes/webhookReceiver');
 
 const app = express();
 
@@ -19,6 +21,8 @@ app.use('/api/projects', projectRoutes);
 app.use('/api/responses', responseRoutes);
 app.use('/api/comments', commentRoutes);
 app.use('/api/tunnels', tunnelRoutes);
+app.use('/api/webhooks', webhookRoutes);
+app.use('/webhook', webhookReceiverRoutes);
 
 const PORT = process.env.PORT || 5000;
 
