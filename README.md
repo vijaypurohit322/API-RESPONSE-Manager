@@ -31,6 +31,22 @@ Demo SVG: <a>https://drive.google.com/uc?export=view&id=12eR09C2PcgCbvThRKtoSwpd
 
 ## Getting Started
 
+### Quick Install - CLI Tool
+
+Install the ARM CLI globally:
+```bash
+npm install -g @arm/cli
+```
+
+Or use from source:
+```bash
+cd cli
+npm install
+npm link
+```
+
+See [cli/README.md](cli/README.md) for complete CLI documentation.
+
 ### Prerequisites
 
 - Node.js (v14 or later)

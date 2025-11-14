@@ -1,0 +1,25 @@
+# Development files
+node_modules/
+.git/
+.gitignore
+
+# Documentation (keep README.md)
+PUBLISHING.md
+INSTALLATION.md
+ROADMAP.md
+
+# Test files
+test/
+*.test.js
+
+# IDE
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
