@@ -1,7 +1,7 @@
 # API Response Manager
 
 [![npm version](https://badge.fury.io/js/@vijaypurohit322-arm%2Fcli.svg)](https://www.npmjs.com/package/@vijaypurohit322-arm/cli)
-[![npm downloads](https://img.shields.io/npm/dm/@vijaypurohit322-arm/cli.svg)](https://www.npmjs.com/package/@vijaypurohit322-arm/cli)
+[![npm downloads](https://img.shields.io/npm/dt/api-response-manager)](https://www.npmjs.com/package/api-response-manager)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 An interactive tool for developers to capture, share, and collaborate on API responses. Share your API testing results with team members using unique project links - no login required for viewers.
