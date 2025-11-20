@@ -1,0 +1,125 @@
+version: '3.8'
+
+services:
+  # MongoDB Database
+  mongodb:
+    image: mongo:7.0
+    container_name: arm-mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: api-response-manager
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - arm-network
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Backend API Server
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: arm-backend
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=production
+      - PORT=5000
+      - MONGODB_URI=mongodb://mongodb:27017/api-response-manager
+      - JWT_SECRET=${JWT_SECRET:-your-secret-key-change-in-production}
+      - FRONTEND_URL=http://localhost:5173
+      - TUNNEL_SERVER_URL=ws://tunnel-server:8080
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    networks:
+      - arm-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Frontend React App
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: arm-frontend
+    restart: unless-stopped
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_API_URL=http://localhost:5000/api
+      - VITE_WS_URL=ws://localhost:8080
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    networks:
+      - arm-network
+
+  # Tunnel Server
+  tunnel-server:
+    build:
+      context: ./tunnel-server
+      dockerfile: Dockerfile
+    container_name: arm-tunnel-server
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+      - "3000-3100:3000-3100"
+    environment:
+      - NODE_ENV=production
+      - PORT=8080
+      - MONGODB_URI=mongodb://mongodb:27017/api-response-manager
+      - JWT_SECRET=${JWT_SECRET:-your-secret-key-change-in-production}
+      - BASE_DOMAIN=tunnel.arm.dev
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    volumes:
+      - ./tunnel-server:/app
+      - /app/node_modules
+    networks:
+      - arm-network
+
+  # Proxy Server (Optional - for API response capture)
+  proxy:
+    build:
+      context: ./proxy
+      dockerfile: Dockerfile
+    container_name: arm-proxy
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+      - BACKEND_URL=http://backend:5000
+    depends_on:
+      - backend
+    volumes:
+      - ./proxy:/app
+      - /app/node_modules
+    networks:
+      - arm-network
+
+networks:
+  arm-network:
+    driver: bridge
+
+volumes:
+  mongodb_data:
+    driver: local
