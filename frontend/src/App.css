@@ -30,9 +30,11 @@
   --primary-color: #4f46e5;
   --secondary-color: #10b981;
   --border-color: #e5e7eb;
+  --hover-bg: #f9fafb;
   --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
   --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+  --border-radius: 0.5rem;
 }
 
 /* === Dark Theme === */
@@ -44,9 +46,11 @@
   --primary-color: #6366f1;
   --secondary-color: #34d399;
   --border-color: #374151;
+  --hover-bg: #374151;
   --shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
   --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.3);
   --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.3);
+  --border-radius: 0.5rem;
 }
 
 /* === Modal Styles === */
@@ -86,6 +90,15 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
   }
 }
 

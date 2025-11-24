@@ -47,6 +47,9 @@ program
   .option('-n, --name <name>', 'Tunnel name')
   .option('-a, --auth', 'Enable basic authentication')
   .option('-r, --rate-limit <limit>', 'Rate limit (requests per minute)', '60')
+  .option('-p, --protocol <protocol>', 'Protocol (http, https, tcp, ws, wss)', 'http')
+  .option('--ssl', 'Enable SSL/HTTPS')
+  .option('-d, --domain <domain>', 'Custom domain')
   .action(tunnelCommand.start);
 
 program
@@ -67,6 +70,61 @@ program
   .option('-f, --follow', 'Follow log output')
   .option('-n, --lines <number>', 'Number of lines to show', '50')
   .action(tunnelCommand.logs);
+
+program
+  .command('tunnel:domain')
+  .description('Set custom domain for tunnel')
+  .argument('<tunnelId>', 'Tunnel ID')
+  .argument('<domain>', 'Custom domain (e.g., api.yourdomain.com)')
+  .action(tunnelCommand.setDomain);
+
+program
+  .command('tunnel:ssl')
+  .description('Upload SSL certificate for tunnel')
+  .argument('<tunnelId>', 'Tunnel ID')
+  .option('--cert <path>', 'Path to certificate file')
+  .option('--key <path>', 'Path to private key file')
+  .option('--ca <path>', 'Path to CA certificate file (optional)')
+  .action(tunnelCommand.uploadSSL);
+
+program
+  .command('tunnel:auth:oauth')
+  .description('Configure OAuth authentication')
+  .argument('<tunnelId>', 'Tunnel ID')
+  .option('--provider <provider>', 'OAuth provider (google, github, microsoft, custom)')
+  .option('--client-id <id>', 'OAuth client ID')
+  .option('--client-secret <secret>', 'OAuth client secret')
+  .option('--callback-url <url>', 'OAuth callback URL')
+  .option('--scope <scope>', 'OAuth scope (comma-separated)')
+  .action(tunnelCommand.configureOAuth);
+
+program
+  .command('tunnel:auth:oidc')
+  .description('Configure OIDC authentication')
+  .argument('<tunnelId>', 'Tunnel ID')
+  .option('--issuer <url>', 'OIDC issuer URL')
+  .option('--client-id <id>', 'OIDC client ID')
+  .option('--client-secret <secret>', 'OIDC client secret')
+  .option('--callback-url <url>', 'OIDC callback URL')
+  .action(tunnelCommand.configureOIDC);
+
+program
+  .command('tunnel:auth:saml')
+  .description('Configure SAML authentication')
+  .argument('<tunnelId>', 'Tunnel ID')
+  .option('--entry-point <url>', 'SAML entry point URL')
+  .option('--issuer <issuer>', 'SAML issuer')
+  .option('--cert <path>', 'Path to IdP certificate file')
+  .option('--callback-url <url>', 'SAML callback URL')
+  .action(tunnelCommand.configureSAML);
+
+program
+  .command('tunnel:ingress')
+  .description('Configure ingress rules for tunnel')
+  .argument('<tunnelId>', 'Tunnel ID')
+  .argument('<rules>', 'Ingress rules (e.g., "/api=localhost:3000,/admin=localhost:4000")')
+  .option('--tls', 'Enable TLS for ingress')
+  .action(tunnelCommand.configureIngress);
 
 // Webhook commands
 program

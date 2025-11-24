@@ -11,6 +11,7 @@ import TunnelsPage from './pages/TunnelsPage';
 import TunnelDetailPage from './pages/TunnelDetailPage';
 import WebhooksPage from './pages/WebhooksPage';
 import WebhookDetailPage from './pages/WebhookDetailPage';
+import OAuthCallback from './pages/OAuthCallback';
 import './App.css';
 
 const App = () => {
@@ -22,6 +23,8 @@ const App = () => {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/share/:token" element={<SharedProjectPage />} />
+        <Route path="/auth/github/callback" element={<OAuthCallback provider="github" />} />
+        <Route path="/auth/microsoft/callback" element={<OAuthCallback provider="microsoft" />} />
         <Route
           path="/projects"
           element={currentUser ? <ProjectPage /> : <Navigate to="/login" />}

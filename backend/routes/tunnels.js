@@ -48,4 +48,49 @@ router.get('/check/:subdomain', auth, tunnelController.checkSubdomain);
 // @access  Private
 router.post('/:id/stats/increment', auth, tunnelController.incrementStats);
 
+// @route   POST /api/tunnels/:id/custom-domain
+// @desc    Set custom domain for tunnel
+// @access  Private
+router.post('/:id/custom-domain', auth, tunnelController.setCustomDomain);
+
+// @route   POST /api/tunnels/:id/ssl
+// @desc    Upload custom SSL certificate
+// @access  Private
+router.post('/:id/ssl', auth, tunnelController.uploadSSLCertificate);
+
+// @route   POST /api/tunnels/:id/auth/oauth
+// @desc    Configure OAuth authentication
+// @access  Private
+router.post('/:id/auth/oauth', auth, tunnelController.configureOAuth);
+
+// @route   POST /api/tunnels/:id/auth/oidc
+// @desc    Configure OIDC authentication
+// @access  Private
+router.post('/:id/auth/oidc', auth, tunnelController.configureOIDC);
+
+// @route   POST /api/tunnels/:id/auth/saml
+// @desc    Configure SAML authentication
+// @access  Private
+router.post('/:id/auth/saml', auth, tunnelController.configureSAML);
+
+// @route   POST /api/tunnels/:id/ingress
+// @desc    Configure ingress rules
+// @access  Private
+router.post('/:id/ingress', auth, tunnelController.configureIngress);
+
+// @route   GET /api/tunnels/:id/auth/oauth/url
+// @desc    Get OAuth authorization URL
+// @access  Public
+router.get('/:id/auth/oauth/url', tunnelController.getOAuthUrl);
+
+// @route   GET /api/tunnels/:id/auth/oidc/url
+// @desc    Get OIDC authorization URL
+// @access  Public
+router.get('/:id/auth/oidc/url', tunnelController.getOIDCUrl);
+
+// @route   GET /api/tunnels/:id/auth/saml/url
+// @desc    Get SAML login URL
+// @access  Public
+router.get('/:id/auth/saml/url', tunnelController.getSAMLUrl);
+
 module.exports = router;

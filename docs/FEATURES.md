@@ -18,19 +18,25 @@
 
 ## 🔐 Authentication
 
-### Login Page
+### Traditional Authentication
 - Email and password authentication
 - Loading states during submission
 - Error handling with user-friendly messages
 - Link to registration page
 - Centered, card-based layout
-
-### Registration Page
-- Email and password fields
-- Password confirmation
+- Password confirmation with validation
 - Client-side validation (min 6 characters, matching passwords)
-- Success redirect to login
-- Link to login page
+
+### Social Authentication (OAuth)
+- **Google OAuth** - Sign in with Google account
+- **GitHub OAuth** - Sign in with GitHub account
+- **Microsoft OAuth** - Sign in with Microsoft account
+- One-click authentication flow
+- Automatic account creation and linking
+- Profile pictures from social accounts
+- Secure JWT token generation
+- Environment-based configuration
+- Complete setup documentation
 
 ## 📊 Project Management
 
@@ -153,13 +159,43 @@
 - Scannable layouts
 - Progressive disclosure (details on demand)
 
+## 🚇 Advanced Tunneling Features
+
+### Protocol Support
+- **HTTP/HTTPS** - Standard web traffic with SSL/TLS
+- **TCP** - Raw TCP connections (databases, custom protocols)
+- **WebSocket (WS/WSS)** - Real-time bidirectional communication
+
+### Security & Authentication
+- **Custom Domains** - Use your own domain names
+- **SSL/TLS Certificates** - Upload custom certificates
+- **OAuth Authentication** - Google, GitHub, Microsoft
+- **OIDC (OpenID Connect)** - Enterprise identity providers
+- **SAML** - Enterprise SSO integration
+- **Rate Limiting** - Configurable request limits
+- **IP Whitelisting** - Restrict access by IP
+
+### Advanced Features
+- **Ingress/Gateway** - Path-based routing to multiple backends
+- **Load Balancing** - Distribute traffic across endpoints
+- **Custom Headers** - Add/modify request headers
+- **Request Transformation** - Modify requests in transit
+
+### CLI Integration
+- Complete tunnel management from command line
+- Create, list, stop, and configure tunnels
+- Set custom domains and SSL certificates
+- Configure authentication providers
+- See [CLI README](cli/README.md) for full documentation
+
 ## 🚀 Ready to Use
 
 All features are fully implemented and ready for production use. The application provides a complete solution for:
-1. Capturing API responses via proxy
-2. Organizing responses by project
-3. Viewing detailed request/response data
-4. Collaborating with team members via comments
-5. Sharing projects with unique links
+1. **Authentication** - Traditional email/password + Social OAuth (Google, GitHub, Microsoft)
+2. **API Response Capturing** - Via proxy server with real-time updates
+3. **Project Management** - Organize and share API responses
+4. **Advanced Tunneling** - Expose local services with enterprise features
+5. **Webhook Testing** - Debug, transform, and route webhooks
+6. **Collaboration** - Comments, sharing, and team features
 
 The UI is clean, modern, and intuitive, following best practices for web application design.

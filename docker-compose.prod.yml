@@ -1,0 +1,129 @@
+version: '3.8'
+
+services:
+  # MongoDB Database
+  mongodb:
+    image: mongo:7.0
+    container_name: arm-mongodb
+    restart: always
+    environment:
+      MONGO_INITDB_DATABASE: api-response-manager
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - arm-network
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Backend API Server
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: arm-backend
+    restart: always
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=production
+      - PORT=5000
+      - MONGODB_URI=mongodb://mongodb:27017/api-response-manager
+      - JWT_SECRET=${JWT_SECRET}
+      - FRONTEND_URL=${FRONTEND_URL}
+      - TUNNEL_SERVER_URL=ws://tunnel-server:8080
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - arm-network
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+
+  # Frontend (Build for production)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.prod
+      args:
+        - VITE_API_URL=${VITE_API_URL}
+        - VITE_WS_URL=${VITE_WS_URL}
+    container_name: arm-frontend
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - arm-network
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+
+  # Tunnel Server
+  tunnel-server:
+    build:
+      context: ./tunnel-server
+      dockerfile: Dockerfile
+    container_name: arm-tunnel-server
+    restart: always
+    ports:
+      - "8080:8080"
+      - "3000-3100:3000-3100"
+    environment:
+      - NODE_ENV=production
+      - PORT=8080
+      - MONGODB_URI=mongodb://mongodb:27017/api-response-manager
+      - JWT_SECRET=${JWT_SECRET}
+      - BASE_DOMAIN=${BASE_DOMAIN}
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - arm-network
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+
+  # Proxy Server (Required for API response capture & sharing)
+  proxy:
+    build:
+      context: ./proxy
+      dockerfile: Dockerfile
+    container_name: arm-proxy
+    restart: always
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+      - BACKEND_URL=http://backend:5000
+    depends_on:
+      - backend
+    networks:
+      - arm-network
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+
+networks:
+  arm-network:
+    driver: bridge
+
+volumes:
+  mongodb_data:
+    driver: local

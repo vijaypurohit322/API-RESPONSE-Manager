@@ -93,9 +93,23 @@ arm logout
 #### `arm tunnel <port>`
 Start a tunnel to expose local server
 ```bash
+# Basic HTTP tunnel
 arm tunnel 3000
-arm tunnel 3000 --subdomain myapi --name "My API"
-arm tunnel 3000 --auth --rate-limit 100
+
+# HTTPS tunnel with SSL
+arm tunnel 3000 --protocol https --ssl
+
+# TCP tunnel (for databases, etc.)
+arm tunnel 5432 --protocol tcp --subdomain postgres
+
+# WebSocket tunnel
+arm tunnel 8080 --protocol ws
+
+# With custom subdomain and authentication
+arm tunnel 3000 --subdomain myapi --name "My API" --auth --rate-limit 100
+
+# With custom domain
+arm tunnel 3000 --protocol https --ssl --domain api.yourdomain.com
 ```
 
 Options:
@@ -103,6 +117,9 @@ Options:
 - `-n, --name <name>` - Tunnel name
 - `-a, --auth` - Enable basic authentication
 - `-r, --rate-limit <limit>` - Rate limit (requests per minute, default: 60)
+- `-p, --protocol <protocol>` - Protocol: http, https, tcp, ws, wss (default: http)
+- `--ssl` - Enable SSL/HTTPS
+- `-d, --domain <domain>` - Custom domain
 
 #### `arm tunnel:list`
 List all active tunnels
@@ -127,6 +144,91 @@ arm tunnel:logs 507f1f77bcf86cd799439011 --lines 100
 Options:
 - `-f, --follow` - Follow log output (real-time)
 - `-n, --lines <number>` - Number of lines to show (default: 50)
+
+#### `arm tunnel:domain <tunnelId> <domain>`
+Set custom domain for tunnel
+```bash
+arm tunnel:domain 507f1f77bcf86cd799439011 api.yourdomain.com
+```
+
+#### `arm tunnel:ssl <tunnelId>`
+Upload SSL certificate for tunnel
+```bash
+arm tunnel:ssl 507f1f77bcf86cd799439011 --cert cert.pem --key key.pem
+arm tunnel:ssl 507f1f77bcf86cd799439011 --cert cert.pem --key key.pem --ca ca.pem
+```
+
+Options:
+- `--cert <path>` - Path to certificate file
+- `--key <path>` - Path to private key file
+- `--ca <path>` - Path to CA certificate file (optional)
+
+#### `arm tunnel:auth:oauth <tunnelId>`
+Configure OAuth authentication for tunnel
+```bash
+arm tunnel:auth:oauth 507f1f77bcf86cd799439011 \
+  --provider google \
+  --client-id YOUR_CLIENT_ID \
+  --client-secret YOUR_SECRET \
+  --callback-url https://yourtunnel.arm.dev/auth/callback \
+  --scope openid,email,profile
+```
+
+Options:
+- `--provider <provider>` - OAuth provider: google, github, microsoft, custom
+- `--client-id <id>` - OAuth client ID
+- `--client-secret <secret>` - OAuth client secret
+- `--callback-url <url>` - OAuth callback URL
+- `--scope <scope>` - OAuth scope (comma-separated)
+
+#### `arm tunnel:auth:oidc <tunnelId>`
+Configure OpenID Connect authentication for tunnel
+```bash
+arm tunnel:auth:oidc 507f1f77bcf86cd799439011 \
+  --issuer https://accounts.google.com \
+  --client-id YOUR_CLIENT_ID \
+  --client-secret YOUR_SECRET \
+  --callback-url https://yourtunnel.arm.dev/auth/callback
+```
+
+Options:
+- `--issuer <url>` - OIDC issuer URL
+- `--client-id <id>` - OIDC client ID
+- `--client-secret <secret>` - OIDC client secret
+- `--callback-url <url>` - OIDC callback URL
+
+#### `arm tunnel:auth:saml <tunnelId>`
+Configure SAML authentication for tunnel
+```bash
+arm tunnel:auth:saml 507f1f77bcf86cd799439011 \
+  --entry-point https://idp.example.com/saml/sso \
+  --issuer https://yourtunnel.arm.dev \
+  --cert idp-cert.pem \
+  --callback-url https://yourtunnel.arm.dev/auth/saml/callback
+```
+
+Options:
+- `--entry-point <url>` - SAML entry point URL
+- `--issuer <issuer>` - SAML issuer
+- `--cert <path>` - Path to IdP certificate file
+- `--callback-url <url>` - SAML callback URL
+
+#### `arm tunnel:ingress <tunnelId> <rules>`
+Configure ingress rules for tunnel (path-based routing)
+```bash
+# Route different paths to different backends
+arm tunnel:ingress 507f1f77bcf86cd799439011 \
+  "/api=localhost:3000,/admin=localhost:4000" \
+  --tls
+
+# Single rule
+arm tunnel:ingress 507f1f77bcf86cd799439011 "/api=localhost:3000"
+```
+
+Options:
+- `--tls` - Enable TLS for ingress
+
+Rules format: `/path=host:port,/path2=host:port`
 
 ### Webhooks
 
@@ -268,11 +370,51 @@ Default configuration:
 # Login
 arm login
 
-# Start tunnel on port 3000
-arm tunnel 3000 --subdomain myapp
+# Start HTTPS tunnel on port 3000
+arm tunnel 3000 --protocol https --ssl --subdomain myapp
 
 # Your local server is now accessible at:
 # https://myapp.tunnel.arm.dev
+```
+
+### Secure Tunnel with OAuth Authentication
+```bash
+# Create HTTPS tunnel
+arm tunnel 3000 --protocol https --ssl --subdomain myapi
+
+# Configure Google OAuth
+arm tunnel:auth:oauth <tunnel-id> \
+  --provider google \
+  --client-id YOUR_GOOGLE_CLIENT_ID \
+  --client-secret YOUR_GOOGLE_SECRET \
+  --callback-url https://myapi.tunnel.arm.dev/auth/callback
+
+# Now your tunnel requires Google login to access
+```
+
+### TCP Tunnel for Database
+```bash
+# Expose PostgreSQL database
+arm tunnel 5432 --protocol tcp --subdomain mydb
+
+# Connect from anywhere:
+# psql -h mydb.tunnel.arm.dev -p 5432 -U username -d database
+```
+
+### Multi-Service Routing with Ingress
+```bash
+# Create tunnel
+arm tunnel 3000 --protocol https --ssl
+
+# Configure path-based routing
+arm tunnel:ingress <tunnel-id> \
+  "/api/v1=localhost:3000,/api/v2=localhost:4000,/admin=localhost:5000" \
+  --tls
+
+# Now:
+# https://yourtunnel.arm.dev/api/v1 -> localhost:3000
+# https://yourtunnel.arm.dev/api/v2 -> localhost:4000
+# https://yourtunnel.arm.dev/admin -> localhost:5000
 ```
 
 ### Test Webhooks Locally

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import authService from '../services/authService';
 import ThemeToggle from '../components/ThemeToggle';
+import SocialLogin from '../components/SocialLogin';
 import '../App.css';
 
 const RegisterPage = () => {
@@ -96,6 +97,10 @@ const RegisterPage = () => {
             {loading ? 'Creating Account...' : 'Sign Up'}
           </button>
         </form>
+
+        <div style={{ marginTop: '1.5rem' }}>
+          <SocialLogin />
+        </div>
 
         <div style={{ marginTop: '1.5rem', textAlign: 'center', color: 'var(--text-secondary)' }}>
           Already have an account?{' '}
