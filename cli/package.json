@@ -1,6 +1,6 @@
 {
   "name": "api-response-manager",
-  "version": "1.0.1",
+  "version": "2.3.0",
   "description": "Command-line interface for API Response Manager",
   "main": "index.js",
   "bin": {
