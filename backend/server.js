@@ -1,7 +1,10 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const connectDB = require('./database');
 const authRoutes = require('./routes/auth');
+const socialAuthRoutes = require('./routes/socialAuth');
+const deviceAuthRoutes = require('./routes/deviceAuth');
 const projectRoutes = require('./routes/projects');
 const responseRoutes = require('./routes/responses');
 const commentRoutes = require('./routes/comments');
@@ -27,6 +30,8 @@ app.get('/api/health', (req, res) => {
 });
 
 app.use('/api/auth', authRoutes);
+app.use('/api/auth/social', socialAuthRoutes);
+app.use('/api/auth/device', deviceAuthRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/responses', responseRoutes);
 app.use('/api/comments', commentRoutes);

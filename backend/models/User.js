@@ -1,6 +1,10 @@
 const mongoose = require('mongoose');
 
 const UserSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: false,
+  },
   email: {
     type: String,
     required: true,
@@ -9,6 +13,23 @@ const UserSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true,
+  },
+  avatar: {
+    type: String,
+    required: false,
+  },
+  provider: {
+    type: String,
+    enum: ['local', 'google', 'github', 'microsoft'],
+    default: 'local',
+  },
+  providerId: {
+    type: String,
+    required: false,
+  },
+  emailVerified: {
+    type: Boolean,
+    default: false,
   },
   createdAt: {
     type: Date,

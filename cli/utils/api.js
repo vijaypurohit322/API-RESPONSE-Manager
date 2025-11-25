@@ -58,6 +58,20 @@ class APIClient {
     return response.data;
   }
 
+  // OAuth Device Flow for CLI
+  async requestDeviceCode(provider) {
+    const response = await this.client.post('/auth/device/code', { provider });
+    return response.data;
+  }
+
+  async pollDeviceToken(deviceCode, provider) {
+    const response = await this.client.post('/auth/device/token', { 
+      device_code: deviceCode,
+      provider 
+    });
+    return response.data;
+  }
+
   // Tunnels
   async createTunnel(data) {
     const response = await this.client.post('/tunnels', data);
@@ -138,6 +152,37 @@ class APIClient {
 
   async getProjectResponses(id, params = {}) {
     const response = await this.client.get(`/projects/${id}/responses`, { params });
+    return response.data;
+  }
+
+  // Advanced Tunnel Features
+  async setTunnelDomain(id, domain) {
+    const response = await this.client.post(`/tunnels/${id}/custom-domain`, { domain });
+    return response.data;
+  }
+
+  async uploadTunnelSSL(id, data) {
+    const response = await this.client.post(`/tunnels/${id}/ssl`, data);
+    return response.data;
+  }
+
+  async configureTunnelOAuth(id, data) {
+    const response = await this.client.post(`/tunnels/${id}/auth/oauth`, data);
+    return response.data;
+  }
+
+  async configureTunnelOIDC(id, data) {
+    const response = await this.client.post(`/tunnels/${id}/auth/oidc`, data);
+    return response.data;
+  }
+
+  async configureTunnelSAML(id, data) {
+    const response = await this.client.post(`/tunnels/${id}/auth/saml`, data);
+    return response.data;
+  }
+
+  async configureTunnelIngress(id, data) {
+    const response = await this.client.post(`/tunnels/${id}/ingress`, data);
     return response.data;
   }
 }

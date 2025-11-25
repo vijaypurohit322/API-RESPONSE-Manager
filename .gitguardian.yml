@@ -1,0 +1,13 @@
+version: 2
+
+# GitGuardian configuration to ignore false positives
+
+paths-ignore:
+  # Ignore example/dummy keys in SAML handler (development only)
+  - tunnel-server/auth/samlHandler.js
+
+# Ignore specific patterns
+patterns-ignore:
+  # Example/truncated private keys for development
+  - name: Example SAML Private Key
+    pattern: "MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDEXAMPLE"

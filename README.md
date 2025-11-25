@@ -13,17 +13,29 @@ Demo SVG: <a>https://drive.google.com/uc?export=view&id=12eR09C2PcgCbvThRKtoSwpd
 ![Project Details](frontend/public/images/ProjDetails.png)
 ## ✨ Features
 
+### Authentication & Security
 - **🔐 User Authentication:** Secure JWT-based registration and login
+- **🌐 Social Login:** Sign in with Google, GitHub, or Microsoft OAuth
+- **🔄 Auto-redirect:** Automatic logout and redirect on session expiry
+
+### Core Features
 - **📊 Project Management:** Create and organize multiple projects
 - **🎯 API Response Capturing:** Automatic capture via proxy server
 - **🔗 Shareable Links:** Generate unique, public links for each project
 - **💬 Collaboration:** Add comments to API responses for team discussions
 - **⚡ Real-time Updates:** Automatic polling for new responses (every 10 seconds)
+
+### Tunneling & Webhooks
+- **🚇 Advanced Tunneling:** Expose local APIs with HTTPS/TLS, TCP, WebSocket support
+  - Custom domains and SSL certificates
+  - OAuth/OIDC/SAML authentication
+  - Path-based routing (ingress)
+  - Rate limiting and security features
+- **🪝 Webhook Testing:** Advanced webhook debugging with signature validation, conditional routing, payload transformation, and integrations (Slack, Discord, Email)
+
+### UI/UX
 - **🎨 Modern UI:** Clean, responsive design with intuitive navigation
 - **🌓 Dark/Light Theme:** Theme toggle with system auto-detect and persisted preference
-- **🔄 Auto-redirect:** Automatic logout and redirect on session expiry
-- **🚇 Live Tunneling:** Expose local APIs to the internet with secure public URLs (like ngrok/Tunnelmole)
-- **🪝 Webhook Testing:** Advanced webhook debugging with signature validation, conditional routing, payload transformation, and integrations (Slack, Discord, Email)
 
 ## Tech Stack
 
@@ -78,6 +90,36 @@ See [cli/README.md](cli/README.md) for complete CLI documentation.
 4. **Install proxy server dependencies:**
    ```bash
    npm install --prefix proxy
+   ```
+
+5. **Configure environment variables:**
+   
+   **Backend** - Copy `.env.example` to `.env` and configure:
+   ```bash
+   cp .env.example backend/.env
+   ```
+   
+   Edit `backend/.env`:
+   ```env
+   MONGODB_URI=mongodb://localhost:27017/api-response-manager
+   JWT_SECRET=your-super-secret-jwt-key-change-this
+   
+   # Optional: Social Login (see docs/SOCIAL_AUTH_SETUP.md)
+   GITHUB_CLIENT_ID=your-github-client-id
+   GITHUB_CLIENT_SECRET=your-github-client-secret
+   GOOGLE_CLIENT_ID=your-google-client-id
+   GOOGLE_CLIENT_SECRET=your-google-client-secret
+   MICROSOFT_CLIENT_ID=your-microsoft-client-id
+   MICROSOFT_CLIENT_SECRET=your-microsoft-client-secret
+   ```
+   
+   **Frontend** - Create `frontend/.env`:
+   ```env
+   VITE_API_URL=http://localhost:5000/api
+   
+   # Optional: Social Login
+   VITE_GITHUB_CLIENT_ID=your-github-client-id
+   VITE_GOOGLE_CLIENT_ID=your-google-client-id
    ```
 
 ### Running the Application
@@ -325,12 +367,33 @@ For issues, questions, or contributions, please open an issue on the GitHub repo
 
 ---
 
-**Version:** 2.2.0  <br>
-**Last Updated:** November 14, 2025 <br>
+**Version:** 2.3.0  <br>
+**Last Updated:** November 24, 2025 <br>
 **Author:** Vijay Singh Purohit <br>
 **Email:** <a href="mailto:vijaypurohit322@gmail.com?">vijaypurohit322@gmail.com</a>
 
-## 🎉 What's New in v2.2.0
+## 🎉 What's New in v2.3.0
+
+### 🌐 Social Authentication (NEW!)
+- **OAuth Login Support** - Sign in with Google, GitHub, or Microsoft
+  * One-click authentication
+  * Automatic account creation and linking
+  * Secure JWT token generation
+  * Profile pictures from social accounts
+- **Setup Guides** - Complete documentation for each provider
+  * [Social Auth Setup](docs/SOCIAL_AUTH_SETUP.md) - All providers
+  * [Google OAuth Setup](docs/GOOGLE_OAUTH_SETUP.md) - Google-specific guide
+  * [GitHub Login Setup](docs/GITHUB_LOGIN_SETUP.md) - GitHub-specific guide
+- **Enhanced Security** - Environment-based JWT secrets
+
+### 🚇 Advanced Tunneling Features (NEW!)
+- **Protocol Support** - HTTP, HTTPS, TCP, WebSocket (WS/WSS)
+- **Custom Domains** - Use your own domain names
+- **SSL/TLS Certificates** - Upload custom certificates
+- **Enterprise Authentication** - OAuth, OIDC, SAML support
+- **Ingress/Gateway** - Path-based routing to multiple backends
+- **CLI Commands** - Complete tunnel management from command line
+  * See [CLI README](cli/README.md) for details
 
 ### 🪝 Webhook Testing Suite (Phase 2.1 & 2.2 Complete!)
 
@@ -404,11 +467,7 @@ For issues, questions, or contributions, please open an issue on the GitHub repo
 - Better contrast and accessibility
 
 ### 📚 Documentation
-- Complete setup guide (SETUP_GUIDE.md)
-- Tunnel setup guide (TUNNEL_SETUP.md)
-- API documentation
-- Troubleshooting guide
-- Product roadmap (ROADMAP.md)
-- Release notes (RELEASE_NOTES.md)
-- Phase 1 completion summary (PHASE1_COMPLETE.md)
-- Updated README with tunnel features
+- Complete setup guide ([docs/SETUP_GUIDE.md](docs/SETUP_GUIDE.md))
+- Social auth setup ([docs/SOCIAL_AUTH_SETUP.md](docs/SOCIAL_AUTH_SETUP.md))
+- Tunnel setup guide ([docs/TUNNEL_SETUP.md](docs/TUNNEL_SETUP.md))
+- All documentation in [docs/](docs/) folder
