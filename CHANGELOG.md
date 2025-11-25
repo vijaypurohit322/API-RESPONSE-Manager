@@ -2,17 +2,26 @@
 
 All notable changes to this project will be documented in this file.
 
-## [2.3.0] - 2025-11-24
+## [2.3.0] - 2025-11-25
 
 ### Added - Social Authentication
-- **Google OAuth Login** - Sign in with Google account
-- **GitHub OAuth Login** - Sign in with GitHub account
-- **Microsoft OAuth Login** - Sign in with Microsoft account
+- **Google OAuth Login** - Sign in with Google account (Web UI + CLI)
+- **GitHub OAuth Login** - Sign in with GitHub account (Web UI + CLI)
+- **Microsoft OAuth Login** - Sign in with Microsoft account (Web UI + CLI)
+- **OAuth Device Flow** - CLI authentication via browser
+  - Device code generation and verification
+  - Automatic browser opening
+  - Token polling with timeout
+  - Device authentication page at `/device`
 - Social login buttons on Login and Register pages
 - Automatic account creation and linking by email
 - Profile picture support from social accounts
-- OAuth callback handlers for GitHub and Microsoft
-- Complete setup documentation (SOCIAL_AUTH_SETUP.md, GITHUB_LOGIN_SETUP.md)
+- OAuth callback handlers for all providers (Google, GitHub, Microsoft)
+- Complete setup documentation:
+  - SOCIAL_AUTH_SETUP.md - General OAuth setup
+  - GOOGLE_OAUTH_SETUP.md - Google-specific guide
+  - GITHUB_LOGIN_SETUP.md - GitHub-specific guide
+  - SAML_SECURITY.md - SAML key management
 
 ### Added - Advanced Tunneling Features
 - **Protocol Support** - HTTP, HTTPS, TCP, WebSocket (WS/WSS)
@@ -35,6 +44,10 @@ All notable changes to this project will be documented in this file.
 - JWT secret consistency across authentication methods
 - Duplicate OAuth callback requests in React StrictMode
 - Token validation for social login users
+- Google OAuth flow - Now supports both ID token (web) and code exchange (CLI)
+- Google Sign-In button loading issue - Switched to standard OAuth flow
+- SAML private key security - Environment-based key loading with example key
+- Device authentication flow - Proper approval and token exchange
 
 ### Changed
 - Updated User model with social auth fields (provider, providerId, avatar, emailVerified)
@@ -44,7 +57,9 @@ All notable changes to this project will be documented in this file.
 
 ### Documentation
 - Created SOCIAL_AUTH_SETUP.md - Complete OAuth setup guide
+- Created GOOGLE_OAUTH_SETUP.md - Google OAuth setup with troubleshooting
 - Created GITHUB_LOGIN_SETUP.md - GitHub-specific setup guide
+- Created SAML_SECURITY.md - SAML private key security best practices
 - Created CLI_UPDATES.md - CLI changes documentation
 - Updated README.md with v2.3.0 features
 - Updated FEATURES.md with social auth and tunneling features

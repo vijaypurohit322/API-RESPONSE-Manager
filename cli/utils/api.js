@@ -58,6 +58,20 @@ class APIClient {
     return response.data;
   }
 
+  // OAuth Device Flow for CLI
+  async requestDeviceCode(provider) {
+    const response = await this.client.post('/auth/device/code', { provider });
+    return response.data;
+  }
+
+  async pollDeviceToken(deviceCode, provider) {
+    const response = await this.client.post('/auth/device/token', { 
+      device_code: deviceCode,
+      provider 
+    });
+    return response.data;
+  }
+
   // Tunnels
   async createTunnel(data) {
     const response = await this.client.post('/tunnels', data);

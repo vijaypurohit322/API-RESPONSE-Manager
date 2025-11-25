@@ -104,11 +104,13 @@ See [cli/README.md](cli/README.md) for complete CLI documentation.
    MONGODB_URI=mongodb://localhost:27017/api-response-manager
    JWT_SECRET=your-super-secret-jwt-key-change-this
    
-   # Optional: Social Login (see SOCIAL_AUTH_SETUP.md)
+   # Optional: Social Login (see docs/SOCIAL_AUTH_SETUP.md)
    GITHUB_CLIENT_ID=your-github-client-id
    GITHUB_CLIENT_SECRET=your-github-client-secret
    GOOGLE_CLIENT_ID=your-google-client-id
    GOOGLE_CLIENT_SECRET=your-google-client-secret
+   MICROSOFT_CLIENT_ID=your-microsoft-client-id
+   MICROSOFT_CLIENT_SECRET=your-microsoft-client-secret
    ```
    
    **Frontend** - Create `frontend/.env`:
@@ -379,8 +381,9 @@ For issues, questions, or contributions, please open an issue on the GitHub repo
   * Secure JWT token generation
   * Profile pictures from social accounts
 - **Setup Guides** - Complete documentation for each provider
-  * [GitHub Login Setup](docs/GITHUB_LOGIN_SETUP.md)
-  * [Social Auth Setup](docs/SOCIAL_AUTH_SETUP.md)
+  * [Social Auth Setup](docs/SOCIAL_AUTH_SETUP.md) - All providers
+  * [Google OAuth Setup](docs/GOOGLE_OAUTH_SETUP.md) - Google-specific guide
+  * [GitHub Login Setup](docs/GITHUB_LOGIN_SETUP.md) - GitHub-specific guide
 - **Enhanced Security** - Environment-based JWT secrets
 
 ### 🚇 Advanced Tunneling Features (NEW!)

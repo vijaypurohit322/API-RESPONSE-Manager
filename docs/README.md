@@ -11,7 +11,8 @@ Complete documentation for API Response Manager.
 
 ## 🔐 Authentication
 
-- **[Social Auth Setup](SOCIAL_AUTH_SETUP.md)** - Google, GitHub, Microsoft OAuth
+- **[Social Auth Setup](SOCIAL_AUTH_SETUP.md)** - Overview for all OAuth providers
+- **[Google OAuth Setup](GOOGLE_OAUTH_SETUP.md)** - Google-specific configuration
 - **[GitHub Login Setup](GITHUB_LOGIN_SETUP.md)** - GitHub OAuth detailed guide
 
 ## 🚇 Tunneling

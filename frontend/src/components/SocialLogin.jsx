@@ -5,52 +5,14 @@ const SocialLogin = () => {
   const [loading, setLoading] = useState(null);
   const navigate = useNavigate();
 
-  // Google Login
-  const handleGoogleLogin = async () => {
+  // Google Login - Use OAuth flow instead of One Tap
+  const handleGoogleLogin = () => {
     setLoading('google');
-    try {
-      // Load Google Sign-In library
-      const google = window.google;
-      if (!google) {
-        throw new Error('Google Sign-In not loaded');
-      }
-
-      google.accounts.id.initialize({
-        client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
-        callback: async (response) => {
-          try {
-            const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/social/google`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({ token: response.credential }),
-            });
-
-            const data = await res.json();
-
-            if (res.ok) {
-              // Store user data in localStorage
-              localStorage.setItem('user', JSON.stringify(data));
-              window.location.href = '/';
-            } else {
-              throw new Error(data.msg || 'Google login failed');
-            }
-          } catch (error) {
-            console.error('Google login error:', error);
-            alert(error.message || 'Failed to login with Google');
-          } finally {
-            setLoading(null);
-          }
-        },
-      });
-
-      google.accounts.id.prompt();
-    } catch (error) {
-      console.error('Google login error:', error);
-      alert('Failed to initialize Google login');
-      setLoading(null);
-    }
+    const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+    const redirectUri = `${window.location.origin}/auth/google/callback`;
+    const scope = 'openid email profile';
+    
+    window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}`;
   };
 
   // GitHub Login

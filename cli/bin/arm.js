@@ -30,6 +30,7 @@ program
   .description('Authenticate with API Response Manager')
   .option('-e, --email <email>', 'Email address')
   .option('-p, --password <password>', 'Password')
+  .option('--provider <provider>', 'OAuth provider (google, github, microsoft)')
   .action(loginCommand);
 
 // Logout command

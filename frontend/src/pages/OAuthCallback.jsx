@@ -31,25 +31,77 @@ const OAuthCallback = ({ provider }) => {
       }
 
       try {
-        const response = await fetch(
-          `${import.meta.env.VITE_API_URL}/auth/social/${provider}`,
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ code }),
+        // Check if this is device authentication
+        const isDeviceAuth = sessionStorage.getItem('device_auth') === 'true';
+        const deviceCode = sessionStorage.getItem('device_code');
+
+        if (isDeviceAuth && deviceCode) {
+          // Device authentication flow
+          const response = await fetch(
+            `${import.meta.env.VITE_API_URL}/auth/social/${provider}`,
+            {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ code }),
+            }
+          );
+
+          const data = await response.json();
+
+          if (response.ok && data.token) {
+            // Get user ID from token payload
+            const tokenPayload = JSON.parse(atob(data.token.split('.')[1]));
+            const userId = tokenPayload.user.id;
+
+            // Approve the device
+            await fetch(
+              `${import.meta.env.VITE_API_URL}/auth/device/approve`,
+              {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ 
+                  device_code: deviceCode,
+                  user_id: userId
+                }),
+              }
+            );
+
+            // Clear session storage
+            sessionStorage.removeItem('device_auth');
+            sessionStorage.removeItem('device_code');
+
+            // Show success message
+            alert('✓ Device authenticated successfully!\n\nYou can now return to your terminal.');
+            navigate('/login');
+          } else {
+            throw new Error(data.msg || 'Authentication failed');
           }
-        );
-
-        const data = await response.json();
-
-        if (response.ok) {
-          // Store user data in localStorage
-          localStorage.setItem('user', JSON.stringify(data));
-          window.location.href = '/';
         } else {
-          throw new Error(data.msg || 'Authentication failed');
+          // Normal web authentication flow
+          const response = await fetch(
+            `${import.meta.env.VITE_API_URL}/auth/social/${provider}`,
+            {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ code }),
+            }
+          );
+
+          const data = await response.json();
+
+          if (response.ok) {
+            // Store user data in localStorage
+            localStorage.setItem('user', JSON.stringify(data));
+            window.location.href = '/';
+          } else {
+            throw new Error(data.msg || 'Authentication failed');
+          }
         }
       } catch (error) {
         console.error('OAuth callback error:', error);

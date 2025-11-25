@@ -41,11 +41,35 @@ npx @vijaypurohit322-arm/cli webhook
 ## Quick Start
 
 ### 1. Login
+
+**Interactive Login (Recommended)**
 ```bash
 arm login
-# Or provide credentials directly
+# Choose from: Email/Password, Google, GitHub, or Microsoft
+```
+
+**Email & Password**
+```bash
 arm login -e your@email.com -p yourpassword
 ```
+
+**Social Login (OAuth)**
+```bash
+# Login with Google
+arm login --provider google
+
+# Login with GitHub
+arm login --provider github
+
+# Login with Microsoft
+arm login --provider microsoft
+```
+
+The CLI will:
+1. Generate a unique device code
+2. Open your browser automatically
+3. Wait for you to authenticate
+4. Store your credentials securely
 
 ### 2. Start a Tunnel
 ```bash
@@ -77,9 +101,59 @@ arm webhook --tunnel <tunnel-id>
 
 #### `arm login`
 Authenticate with API Response Manager
+
+**Options:**
+- `-e, --email <email>` - Email address (for email/password login)
+- `-p, --password <password>` - Password (for email/password login)
+- `--provider <provider>` - OAuth provider: google, github, or microsoft
+
+**Examples:**
 ```bash
+# Interactive login (choose method)
 arm login
-arm login -e email@example.com -p password
+
+# Email & Password
+arm login -e user@example.com -p mypassword
+
+# Social Login (OAuth Device Flow)
+arm login --provider github
+arm login --provider google
+arm login --provider microsoft
+```
+
+**OAuth Device Flow:**
+When using social login, the CLI will:
+1. Generate a unique device code (e.g., `ABCD-EFGH`)
+2. Display a verification URL
+3. Automatically open your browser
+4. Wait for you to complete authentication
+5. Store your token securely
+
+Example output:
+```bash
+$ arm login --provider github
+
+🌐 Logging in with github...
+
+📋 Please complete authentication:
+
+  1. Visit: https://localhost:5173/device
+  2. Enter code: ABCD-EFGH
+
+  Code expires in 600 seconds
+
+? Open browser automatically? (Y/n) 
+
+✓ Browser opened
+
+⠋ Waiting for authentication...
+✓ Authentication successful!
+
+User: John Doe
+Provider: github
+Token saved to: ~/.config/arm-cli/config.json
+
+✓ You can now use all ARM CLI commands
 ```
 
 #### `arm logout`

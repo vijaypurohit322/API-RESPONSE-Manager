@@ -7,14 +7,61 @@ const User = require('../models/User');
 // Google OAuth
 router.post('/google', async (req, res) => {
   try {
-    const { token } = req.body;
+    const { token, code } = req.body;
 
-    // Verify Google token
-    const response = await axios.get(
-      `https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=${token}`
-    );
+    let email, name, picture, googleId;
 
-    const { email, name, picture, sub: googleId } = response.data;
+    // Handle both flows: ID token (web) and OAuth code (CLI)
+    if (token) {
+      // Web UI flow - ID token verification
+      const response = await axios.get(
+        `https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=${token}`
+      );
+      email = response.data.email;
+      name = response.data.name;
+      picture = response.data.picture;
+      googleId = response.data.sub;
+    } else if (code) {
+      // CLI device flow - OAuth code exchange
+      console.log('Google OAuth - Received code:', code ? 'Yes' : 'No');
+      console.log('Google OAuth - Client ID:', process.env.GOOGLE_CLIENT_ID ? 'Set' : 'Missing');
+      console.log('Google OAuth - Client Secret:', process.env.GOOGLE_CLIENT_SECRET ? 'Set' : 'Missing');
+
+      if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
+        console.error('Google OAuth credentials not configured');
+        return res.status(500).json({ msg: 'Google OAuth not configured on server' });
+      }
+
+      // Exchange code for access token
+      const tokenResponse = await axios.post(
+        'https://oauth2.googleapis.com/token',
+        {
+          client_id: process.env.GOOGLE_CLIENT_ID,
+          client_secret: process.env.GOOGLE_CLIENT_SECRET,
+          code,
+          redirect_uri: `${process.env.FRONTEND_URL || 'http://localhost:5173'}/auth/google/callback`,
+          grant_type: 'authorization_code'
+        }
+      );
+
+      console.log('Google token response:', tokenResponse.data);
+
+      const accessToken = tokenResponse.data.access_token;
+
+      // Get user info
+      const userResponse = await axios.get('https://www.googleapis.com/oauth2/v2/userinfo', {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      });
+
+      email = userResponse.data.email;
+      name = userResponse.data.name;
+      picture = userResponse.data.picture;
+      googleId = userResponse.data.id;
+    } else {
+      return res.status(400).json({ msg: 'Either token or code is required' });
+    }
 
     if (!email) {
       return res.status(400).json({ msg: 'Email not provided by Google' });
@@ -55,14 +102,22 @@ router.post('/google', async (req, res) => {
       payload,
       process.env.JWT_SECRET,
       { expiresIn: '7d' },
-      (err, token) => {
+      (err, jwtToken) => {
         if (err) throw err;
-        res.json({ token });
+        res.json({ 
+          token: jwtToken,
+          user: {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            avatar: user.avatar
+          }
+        });
       }
     );
   } catch (error) {
     console.error('Google OAuth error:', error.response?.data || error.message);
-    res.status(500).json({ msg: 'Google authentication failed' });
+    res.status(500).json({ msg: 'Google authentication failed', error: error.message });
   }
 });
 
