@@ -151,10 +151,19 @@ class SAMLHandler {
   }
 
   generatePrivateKey() {
-    // In production, this should be loaded from secure storage
+    // Load from environment variable or secure storage
+    if (process.env.SAML_PRIVATE_KEY) {
+      return process.env.SAML_PRIVATE_KEY.replace(/\\n/g, '\n');
+    }
+
+    // Development/testing only - generate a new key or use example
+    console.warn('WARNING: Using example SAML private key. Set SAML_PRIVATE_KEY environment variable in production!');
+    
+    // This is an example/dummy key for development only
+    // In production, generate a real key with: openssl genrsa -out private-key.pem 2048
     return `-----BEGIN PRIVATE KEY-----
-MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC7VJTUt9Us8cKj
-MzEfYyjiWA4R4/M2bS1+fWIcPm15j9zB/pQYd3MWlLmqDIqPa2Jmx1rfMQYyaKPW
+MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDEXAMPLE...
+(This is a truncated example key - replace with real key in production)
 -----END PRIVATE KEY-----`;
   }
 

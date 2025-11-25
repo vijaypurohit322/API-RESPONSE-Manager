@@ -71,6 +71,17 @@ out/
 .docker/
 docker-compose.override.yml
 
+# === Security: Private Keys & Certificates ===
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+saml-private-key.*
+saml-certificate.*
+private-key.*
+certificate.*
+
 # === Misc ===
 *.swp
 *.bak
