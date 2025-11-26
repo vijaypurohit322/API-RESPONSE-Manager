@@ -73,6 +73,24 @@ const tunnelService = {
     const response = await axiosInstance.get(`/check/${subdomain}`);
     return response.data;
   },
+
+  // Update IP whitelist
+  updateIPWhitelist: async (id, ipWhitelist) => {
+    const response = await axiosInstance.put(`/${id}/ip-whitelist`, { ipWhitelist });
+    return response.data;
+  },
+
+  // Update IP blacklist
+  updateIPBlacklist: async (id, ipBlacklist) => {
+    const response = await axiosInstance.put(`/${id}/ip-blacklist`, { ipBlacklist });
+    return response.data;
+  },
+
+  // Update tunnel (including rate limits)
+  updateTunnel: async (id, updates) => {
+    const response = await axiosInstance.put(`/${id}`, updates);
+    return response.data;
+  },
 };
 
 export default tunnelService;

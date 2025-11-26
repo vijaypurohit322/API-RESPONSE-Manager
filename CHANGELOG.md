@@ -2,7 +2,30 @@
 
 All notable changes to this project will be documented in this file.
 
-## [2.3.0] - 2025-11-25
+## [2.3.1] - 2025-11-26
+
+### Added - Production Ready Features
+- **IP Whitelisting & Blacklisting** - Complete access control with IPv4/IPv6 and CIDR support
+- **Enhanced Rate Limiting** - Multi-level (global, per-IP, per-user, per-tunnel) with Redis backing
+- **Health Check Endpoints** - 6 endpoints including Kubernetes probes
+- **Structured Logging** - Winston with JSON format, file rotation, specialized log methods
+- **Graceful Shutdown** - Signal handling for zero-downtime deployments
+- **Security Settings UI** - Frontend component for IP and rate limit management
+- **17 New CLI Commands** - Complete CLI for security configuration
+- **Documentation Files** - Comprehensive guides for all features
+
+### Fixed
+- CLI health command now properly handles degraded status (503 responses)
+- Health endpoint URL construction in CLI
+
+### Dependencies Added
+- ipaddr.js - IP validation
+- express-rate-limit - Rate limiting
+- rate-limit-redis - Redis store
+- redis - Redis client
+- winston - Structured logging
+
+## [2.3.0] - 2025-11-24
 
 ### Added - Social Authentication
 - **Google OAuth Login** - Sign in with Google account (Web UI + CLI)
@@ -61,7 +84,7 @@ All notable changes to this project will be documented in this file.
 - Created GITHUB_LOGIN_SETUP.md - GitHub-specific setup guide
 - Created SAML_SECURITY.md - SAML private key security best practices
 - Created CLI_UPDATES.md - CLI changes documentation
-- Updated README.md with v2.3.0 features
+- Updated README.md with v2.3.1 features
 - Updated FEATURES.md with social auth and tunneling features
 - Created frontend/.env.example with OAuth variables
 

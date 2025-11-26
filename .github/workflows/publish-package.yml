@@ -13,8 +13,24 @@ jobs:
         with:
           node-version: '18'
           registry-url: 'https://registry.npmjs.org'
-      - run: cd cli && npm ci
-      - run: cd cli && npm publish --access public
+      
+      # Install dependencies
+      - name: Install dependencies
+        run: |
+          cd cli
+          npm ci --legacy-peer-deps
+      
+      # Verify package before publishing
+      - name: Verify package
+        run: |
+          cd cli
+          npm pack --dry-run
+      
+      # Publish to npm
+      - name: Publish to npm
+        run: |
+          cd cli
+          npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
@@ -30,7 +46,23 @@ jobs:
           node-version: '18'
           registry-url: 'https://npm.pkg.github.com'
           scope: '@vijaypurohit322'
-      - run: cd cli && npm ci
-      - run: cd cli && npm publish
+      
+      # Install dependencies
+      - name: Install dependencies
+        run: |
+          cd cli
+          npm ci --legacy-peer-deps
+      
+      # Update package name for GitHub registry
+      - name: Update package name for GPR
+        run: |
+          cd cli
+          node -e "const pkg=require('./package.json');pkg.name='@vijaypurohit322/api-response-manager';require('fs').writeFileSync('package.json',JSON.stringify(pkg,null,2))"
+      
+      # Publish to GitHub Packages
+      - name: Publish to GitHub Packages
+        run: |
+          cd cli
+          npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

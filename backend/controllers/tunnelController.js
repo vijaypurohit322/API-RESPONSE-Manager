@@ -531,3 +531,83 @@ exports.getSAMLUrl = async (req, res) => {
     res.status(500).json({ msg: 'Server error' });
   }
 };
+
+// Update IP whitelist
+exports.updateIPWhitelist = async (req, res) => {
+  try {
+    const { ipWhitelist } = req.body;
+
+    // Validate IP list
+    const IPWhitelistMiddleware = require('../middleware/ipWhitelist');
+    const validation = IPWhitelistMiddleware.validateIPList(ipWhitelist || []);
+    
+    if (!validation.valid) {
+      return res.status(400).json({ 
+        msg: 'Invalid IP whitelist',
+        errors: validation.errors 
+      });
+    }
+
+    const tunnel = await Tunnel.findById(req.params.id);
+
+    if (!tunnel) {
+      return res.status(404).json({ msg: 'Tunnel not found' });
+    }
+
+    // Check ownership
+    if (tunnel.userId.toString() !== req.user.id) {
+      return res.status(403).json({ msg: 'Not authorized' });
+    }
+
+    tunnel.ipWhitelist = ipWhitelist;
+    await tunnel.save();
+
+    res.json({ 
+      msg: 'IP whitelist updated successfully',
+      ipWhitelist: tunnel.ipWhitelist 
+    });
+  } catch (error) {
+    console.error('Update IP whitelist error:', error);
+    res.status(500).json({ msg: 'Server error' });
+  }
+};
+
+// Update IP blacklist
+exports.updateIPBlacklist = async (req, res) => {
+  try {
+    const { ipBlacklist } = req.body;
+
+    // Validate IP list
+    const IPWhitelistMiddleware = require('../middleware/ipWhitelist');
+    const validation = IPWhitelistMiddleware.validateIPList(ipBlacklist || []);
+    
+    if (!validation.valid) {
+      return res.status(400).json({ 
+        msg: 'Invalid IP blacklist',
+        errors: validation.errors 
+      });
+    }
+
+    const tunnel = await Tunnel.findById(req.params.id);
+
+    if (!tunnel) {
+      return res.status(404).json({ msg: 'Tunnel not found' });
+    }
+
+    // Check ownership
+    if (tunnel.userId.toString() !== req.user.id) {
+      return res.status(403).json({ msg: 'Not authorized' });
+    }
+
+    tunnel.ipBlacklist = ipBlacklist;
+    await tunnel.save();
+
+    res.json({ 
+      msg: 'IP blacklist updated successfully',
+      ipBlacklist: tunnel.ipBlacklist 
+    });
+  } catch (error) {
+    console.error('Update IP blacklist error:', error);
+    res.status(500).json({ msg: 'Server error' });
+  }
+};
