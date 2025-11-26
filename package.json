@@ -1,6 +1,6 @@
 {
   "name": "api-response-manager",
-  "version": "2.0.0",
+  "version": "2.3.1",
   "description": "Capture, share, and collaborate on API responses with your team using shareable project links.",
   "main": "index.js",
   "scripts": {

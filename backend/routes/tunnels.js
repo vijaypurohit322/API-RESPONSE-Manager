@@ -48,6 +48,16 @@ router.get('/check/:subdomain', auth, tunnelController.checkSubdomain);
 // @access  Private
 router.post('/:id/stats/increment', auth, tunnelController.incrementStats);
 
+// @route   PUT /api/tunnels/:id/ip-whitelist
+// @desc    Update tunnel IP whitelist
+// @access  Private
+router.put('/:id/ip-whitelist', auth, tunnelController.updateIPWhitelist);
+
+// @route   PUT /api/tunnels/:id/ip-blacklist
+// @desc    Update tunnel IP blacklist
+// @access  Private
+router.put('/:id/ip-blacklist', auth, tunnelController.updateIPBlacklist);
+
 // @route   POST /api/tunnels/:id/custom-domain
 // @desc    Set custom domain for tunnel
 // @access  Private

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import tunnelService from '../services/tunnelService';
 import Navbar from '../components/Navbar';
+import SecuritySettings from '../components/SecuritySettings';
 import '../App.css';
 
 const TunnelDetailPage = () => {
@@ -287,7 +288,13 @@ const TunnelDetailPage = () => {
             <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.75rem', backgroundColor: 'var(--bg-color)', borderRadius: '0.5rem' }}>
               <span style={{ color: 'var(--text-secondary)' }}>Rate Limit</span>
               <span style={{ fontWeight: 'var(--font-weight-semibold)' }}>
-                {tunnel.rateLimit.requestsPerMinute} requests/min
+                {tunnel.rateLimit.enabled ? (
+                  <>
+                    {tunnel.rateLimit.requestsPerMinute} req/min
+                    {tunnel.rateLimit.requestsPerHour && `, ${tunnel.rateLimit.requestsPerHour} req/hour`}
+                    {tunnel.rateLimit.requestsPerDay && `, ${tunnel.rateLimit.requestsPerDay} req/day`}
+                  </>
+                ) : 'Disabled'}
               </span>
             </div>
 
@@ -315,6 +322,9 @@ const TunnelDetailPage = () => {
             )}
           </div>
         </div>
+
+        {/* Security Settings */}
+        <SecuritySettings tunnel={tunnel} onUpdate={loadTunnelData} />
 
         {/* Connection Command */}
         <div className="card" style={{ marginBottom: '1rem' }}>

@@ -367,12 +367,12 @@ For issues, questions, or contributions, please open an issue on the GitHub repo
 
 ---
 
-**Version:** 2.3.0  <br>
+**Version:** 2.3.1  <br>
 **Last Updated:** November 24, 2025 <br>
 **Author:** Vijay Singh Purohit <br>
 **Email:** <a href="mailto:vijaypurohit322@gmail.com?">vijaypurohit322@gmail.com</a>
 
-## 🎉 What's New in v2.3.0
+## 🎉 What's New in v2.3.1
 
 ### 🌐 Social Authentication (NEW!)
 - **OAuth Login Support** - Sign in with Google, GitHub, or Microsoft

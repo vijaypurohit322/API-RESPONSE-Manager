@@ -92,3 +92,11 @@ certificate.*
 *.tgz
 *.env
 !.env.example
+
+# === Documentation ===
+COMPETITIVE_ANALYSIS.md
+GRACEFUL_SHUTDOWN.md
+WEEK_1_SUMMARY.md
+ROADMAP_2025.md
+TESTING_GUIDE.md
+IMPLEMENTATION_SUMMARY.md

@@ -55,13 +55,21 @@ const tunnelSchema = new mongoose.Schema({
     default: 0
   },
   rateLimit: {
+    enabled: {
+      type: Boolean,
+      default: true
+    },
     requestsPerMinute: {
       type: Number,
       default: 60
     },
-    enabled: {
-      type: Boolean,
-      default: true
+    requestsPerHour: {
+      type: Number,
+      default: 1000
+    },
+    requestsPerDay: {
+      type: Number,
+      default: 10000
     }
   },
   protocol: {
@@ -156,6 +164,10 @@ const tunnelSchema = new mongoose.Schema({
     }
   },
   ipWhitelist: [{
+    type: String,
+    trim: true
+  }],
+  ipBlacklist: [{
     type: String,
     trim: true
   }],

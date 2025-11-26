@@ -17,6 +17,10 @@ const webhookCommand = require('../commands/webhook');
 const projectCommand = require('../commands/project');
 const logsCommand = require('../commands/logs');
 const configCommand = require('../commands/config');
+const ipWhitelistCommand = require('../commands/ipWhitelist');
+const ipBlacklistCommand = require('../commands/ipBlacklist');
+const rateLimitCommand = require('../commands/rateLimit');
+const healthCommand = require('../commands/health');
 
 // CLI setup
 program
@@ -126,6 +130,85 @@ program
   .argument('<rules>', 'Ingress rules (e.g., "/api=localhost:3000,/admin=localhost:4000")')
   .option('--tls', 'Enable TLS for ingress')
   .action(tunnelCommand.configureIngress);
+
+// IP Whitelist commands
+program
+  .command('tunnel:ip-whitelist:add')
+  .description('Add IP to tunnel whitelist')
+  .argument('<tunnelId>', 'Tunnel ID')
+  .argument('<ip>', 'IP address or CIDR range (e.g., 192.168.1.100 or 10.0.0.0/8)')
+  .action(ipWhitelistCommand.add);
+
+program
+  .command('tunnel:ip-whitelist:remove')
+  .description('Remove IP from tunnel whitelist')
+  .argument('<tunnelId>', 'Tunnel ID')
+  .argument('<ip>', 'IP address or CIDR range')
+  .action(ipWhitelistCommand.remove);
+
+program
+  .command('tunnel:ip-whitelist:list')
+  .description('List tunnel IP whitelist')
+  .argument('<tunnelId>', 'Tunnel ID')
+  .action(ipWhitelistCommand.list);
+
+program
+  .command('tunnel:ip-whitelist:clear')
+  .description('Clear tunnel IP whitelist')
+  .argument('<tunnelId>', 'Tunnel ID')
+  .action(ipWhitelistCommand.clear);
+
+// IP Blacklist commands
+program
+  .command('tunnel:ip-blacklist:add')
+  .description('Add IP to tunnel blacklist')
+  .argument('<tunnelId>', 'Tunnel ID')
+  .argument('<ip>', 'IP address or CIDR range')
+  .action(ipBlacklistCommand.add);
+
+program
+  .command('tunnel:ip-blacklist:remove')
+  .description('Remove IP from tunnel blacklist')
+  .argument('<tunnelId>', 'Tunnel ID')
+  .argument('<ip>', 'IP address or CIDR range')
+  .action(ipBlacklistCommand.remove);
+
+program
+  .command('tunnel:ip-blacklist:list')
+  .description('List tunnel IP blacklist')
+  .argument('<tunnelId>', 'Tunnel ID')
+  .action(ipBlacklistCommand.list);
+
+program
+  .command('tunnel:ip-blacklist:clear')
+  .description('Clear tunnel IP blacklist')
+  .argument('<tunnelId>', 'Tunnel ID')
+  .action(ipBlacklistCommand.clear);
+
+// Rate Limit commands
+program
+  .command('tunnel:rate-limit')
+  .description('Configure tunnel rate limits')
+  .argument('<tunnelId>', 'Tunnel ID')
+  .option('--rpm <number>', 'Requests per minute')
+  .option('--rph <number>', 'Requests per hour')
+  .option('--rpd <number>', 'Requests per day')
+  .option('--enable', 'Enable rate limiting')
+  .option('--disable', 'Disable rate limiting')
+  .action(rateLimitCommand.configure);
+
+program
+  .command('tunnel:rate-limit:show')
+  .description('Show tunnel rate limits')
+  .argument('<tunnelId>', 'Tunnel ID')
+  .action(rateLimitCommand.show);
+
+// Health check command
+program
+  .command('health')
+  .description('Check server health')
+  .option('-d, --detailed', 'Show detailed health information')
+  .action(healthCommand.check);
 
 // Webhook commands
 program

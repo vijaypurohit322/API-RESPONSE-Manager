@@ -185,6 +185,23 @@ class APIClient {
     const response = await this.client.post(`/tunnels/${id}/ingress`, data);
     return response.data;
   }
+
+  // IP Management
+  async updateIPWhitelist(id, ipWhitelist) {
+    const response = await this.client.put(`/tunnels/${id}/ip-whitelist`, { ipWhitelist });
+    return response.data;
+  }
+
+  async updateIPBlacklist(id, ipBlacklist) {
+    const response = await this.client.put(`/tunnels/${id}/ip-blacklist`, { ipBlacklist });
+    return response.data;
+  }
+
+  // Update Tunnel
+  async updateTunnel(id, updates) {
+    const response = await this.client.put(`/tunnels/${id}`, updates);
+    return response.data;
+  }
 }
 
 module.exports = new APIClient();

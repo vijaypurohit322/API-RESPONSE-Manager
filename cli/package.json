@@ -1,6 +1,6 @@
 {
   "name": "api-response-manager",
-  "version": "2.3.0",
+  "version": "2.3.1",
   "description": "Command-line interface for API Response Manager",
   "main": "index.js",
   "bin": {
@@ -8,7 +8,17 @@
   },
   "scripts": {
     "test": "jest",
-    "link": "npm link"
+    "link": "npm link",
+    "prepublishOnly": "echo 'Publishing api-response-manager CLI...'"
+  },
+  "files": [
+    "bin/",
+    "commands/",
+    "utils/",
+    "README.md"
+  ],
+  "publishConfig": {
+    "access": "public"
   },
   "keywords": [
     "api",
@@ -47,5 +57,6 @@
   "bugs": {
     "url": "https://github.com/vijaypurohit322/api-response-manager/issues"
   },
-  "homepage": "https://github.com/vijaypurohit322/api-response-manager#readme"
+  "homepage": "https://github.com/vijaypurohit322/api-response-manager#readme",
+  "preferGlobal": true
 }
