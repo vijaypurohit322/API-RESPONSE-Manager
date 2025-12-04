@@ -1,12 +1,18 @@
 # ARM CLI - API Response Manager Command Line Interface
 
+[![npm version](https://img.shields.io/npm/v/api-response-manager.svg)](https://www.npmjs.com/package/api-response-manager)
+[![npm downloads](https://img.shields.io/npm/dt/api-response-manager.svg)](https://www.npmjs.com/package/api-response-manager)
+[![License: Proprietary](https://img.shields.io/badge/License-Proprietary-red.svg)](https://github.com/vijaypurohit322/api-response-manager/blob/main/LICENSE)
+
 Command-line interface for API Response Manager. Manage tunnels, webhooks, and projects from your terminal.
+
+**Version:** 2.5.0 | **Live Service:** https://tunnelapi.in
 
 ## Installation
 
 ### Option 1: Install from npm (Recommended)
 ```bash
-npm install -g @vijaypurohit322-arm/cli
+npm install -g api-response-manager
 ```
 
 After installation, verify:
@@ -33,9 +39,9 @@ arm --version
 
 ### Option 3: Use with npx (No Installation)
 ```bash
-npx @vijaypurohit322-arm/cli login
-npx @vijaypurohit322-arm/cli tunnel 3000
-npx @vijaypurohit322-arm/cli webhook
+npx api-response-manager login
+npx api-response-manager tunnel 3000
+npx api-response-manager webhook
 ```
 
 ## Quick Start
@@ -444,12 +450,31 @@ Default configuration:
 # Login
 arm login
 
-# Start HTTPS tunnel on port 3000
-arm tunnel 3000 --protocol https --ssl --subdomain myapp
+# Start tunnel on port 3000 with custom subdomain
+arm tunnel 3000 --subdomain myapp
 
 # Your local server is now accessible at:
-# https://myapp.tunnel.arm.dev
+# https://myapp.free-tunnelapi.app
+
+# Output:
+# 🚇 Starting Tunnel...
+# ✔ Tunnel created successfully!
+# ┌─────────────────────────────────────────────┐
+# │  Tunnel Information                         │
+# ├─────────────────────────────────────────────┤
+# │  Name:        myapp                         │
+# │  Public URL:  https://myapp.free-tunnelapi.app│
+# │  Local Port:  3000                          │
+# └─────────────────────────────────────────────┘
+# 🎉 Tunnel Active!
 ```
+
+### Tunnel Timeouts (Industry Standard)
+| Setting | Value | Description |
+|---------|-------|-------------|
+| Heartbeat | 30 seconds | CLI sends keepalive every 30s |
+| Idle Timeout | 2 hours | Closes after 2 hours of no requests |
+| Max Session | 24 hours | Requires reconnect after 24 hours |
 
 ### Secure Tunnel with OAuth Authentication
 ```bash
@@ -563,7 +588,7 @@ source ~/.bashrc
 
 **Alternative - Use npx:**
 ```bash
-npx @vijaypurohit322-arm/cli login
+npx api-response-manager login
 ```
 
 ## Publishing to npm
@@ -591,4 +616,11 @@ npm publish --access public
 
 ## License
 
-MIT License - see LICENSE file for details
+This software is proprietary. See [LICENSE](https://github.com/vijaypurohit322/api-response-manager/blob/main/LICENSE) for details.
+
+**Key Points:**
+- ✅ Personal and educational use allowed
+- ✅ Self-hosting for non-commercial use allowed
+- ❌ Commercial use requires separate license
+- ❌ Resale or redistribution prohibited
+- 📧 Contact: vijaypurohit322@gmail.com

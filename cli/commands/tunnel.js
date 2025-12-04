@@ -2,6 +2,7 @@ const chalk = require('chalk');
 const ora = require('ora');
 const WebSocket = require('ws');
 const Table = require('cli-table3');
+const axios = require('axios');
 const api = require('../utils/api');
 const config = require('../utils/config');
 
@@ -38,18 +39,24 @@ async function start(port, options) {
 
     spinner.succeed(chalk.green('Tunnel created successfully!'));
 
+    // Safe string padding function
+    const safePadEnd = (str, length) => {
+      const s = String(str || '');
+      return s.length >= length ? s : s + ' '.repeat(length - s.length);
+    };
+
     console.log(chalk.gray('\n┌─────────────────────────────────────────────┐'));
     console.log(chalk.gray('│') + chalk.white.bold('  Tunnel Information                        ') + chalk.gray('│'));
     console.log(chalk.gray('├─────────────────────────────────────────────┤'));
-    console.log(chalk.gray('│') + chalk.gray('  Name:        ') + chalk.white(tunnel.name.padEnd(28)) + chalk.gray('│'));
-    console.log(chalk.gray('│') + chalk.gray('  Public URL:  ') + chalk.cyan(tunnel.publicUrl.padEnd(28)) + chalk.gray('│'));
-    console.log(chalk.gray('│') + chalk.gray('  Local Port:  ') + chalk.white(String(tunnel.localPort).padEnd(28)) + chalk.gray('│'));
-    console.log(chalk.gray('│') + chalk.gray('  Tunnel ID:   ') + chalk.yellow(tunnel._id.padEnd(28)) + chalk.gray('│'));
+    console.log(chalk.gray('│') + chalk.gray('  Name:        ') + chalk.white(safePadEnd(tunnel.subdomain || 'Unknown', 28)) + chalk.gray('│'));
+    console.log(chalk.gray('│') + chalk.gray('  Public URL:  ') + chalk.cyan(safePadEnd(tunnel.publicUrl || 'Unknown', 28)) + chalk.gray('│'));
+    console.log(chalk.gray('│') + chalk.gray('  Local Port:  ') + chalk.white(safePadEnd(tunnel.localPort || 'Unknown', 28)) + chalk.gray('│'));
+    console.log(chalk.gray('│') + chalk.gray('  Tunnel ID:   ') + chalk.yellow(safePadEnd(tunnel.id || tunnel._id || 'Unknown', 28)) + chalk.gray('│'));
     console.log(chalk.gray('└─────────────────────────────────────────────┘\n'));
 
     // Connect tunnel client
     console.log(chalk.blue('Connecting tunnel client...\n'));
-    await connectTunnelClient(tunnel._id, tunnel.subdomain, tunnel.localPort);
+    await connectTunnelClient(tunnel.id || tunnel._id, tunnel.subdomain, tunnel.localPort);
 
   } catch (error) {
     spinner.fail(chalk.red('Failed to create tunnel'));
@@ -60,11 +67,13 @@ async function start(port, options) {
 
 // Connect tunnel client
 async function connectTunnelClient(tunnelId, subdomain, localPort) {
-  const tunnelServerUrl = config.get('tunnelServerUrl') || 'ws://localhost:9000';
+  const tunnelServerUrl = config.get('tunnelServerUrl') || 'ws://localhost:8080';
   const token = api.getToken();
   const userId = config.get('userId');
 
   const ws = new WebSocket(tunnelServerUrl);
+
+  let heartbeatInterval;
 
   ws.on('open', () => {
     console.log(chalk.green('✓ Connected to tunnel server'));
@@ -77,6 +86,13 @@ async function connectTunnelClient(tunnelId, subdomain, localPort) {
       authToken: token,
       userId
     }));
+
+    // Send heartbeat every 30 seconds to keep connection alive (industry standard)
+    heartbeatInterval = setInterval(() => {
+      if (ws.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify({ type: 'heartbeat', tunnelId, subdomain }));
+      }
+    }, 30000);
   });
 
   ws.on('message', async (data) => {
@@ -90,23 +106,69 @@ async function connectTunnelClient(tunnelId, subdomain, localPort) {
     } else if (message.type === 'request') {
       const timestamp = new Date().toLocaleTimeString();
       console.log(chalk.gray(`[${timestamp}]`), chalk.blue(message.method), chalk.white(message.path));
+      
+      // Forward request to local server
+      try {
+        const localUrl = `http://localhost:${localPort}${message.path}`;
+        const response = await axios({
+          method: message.method.toLowerCase(),
+          url: localUrl,
+          headers: message.headers || {},
+          data: message.body,
+          validateStatus: () => true // Accept any status code
+        });
+        
+        // Clean up headers to avoid conflicts
+        const cleanHeaders = { ...response.headers };
+        delete cleanHeaders['transfer-encoding'];
+        delete cleanHeaders['content-length'];
+        
+        // Send response back to tunnel server
+        ws.send(JSON.stringify({
+          type: 'response',
+          requestId: message.requestId,
+          statusCode: response.status,
+          headers: cleanHeaders,
+          body: response.data
+        }));
+      } catch (error) {
+        console.error(chalk.red(`Error forwarding request: ${error.message}`));
+        ws.send(JSON.stringify({
+          type: 'response',
+          requestId: message.requestId,
+          statusCode: 500,
+          headers: { 'Content-Type': 'application/json' },
+          body: { error: 'Tunnel client error', message: error.message }
+        }));
+      }
+    } else if (message.type === 'timeout') {
+      // Handle server-side timeout notifications
+      if (message.reason === 'idle') {
+        console.log(chalk.yellow('\n⏰ Tunnel closed due to 2 hours of inactivity.'));
+      } else if (message.reason === 'max_session') {
+        console.log(chalk.yellow('\n⏰ Tunnel session expired after 24 hours.'));
+      }
+      console.log(chalk.gray(message.message || 'Please reconnect to continue.'));
     } else if (message.type === 'error') {
       console.error(chalk.red(`Error: ${message.error}`));
     }
   });
 
   ws.on('close', () => {
+    if (heartbeatInterval) clearInterval(heartbeatInterval);
     console.log(chalk.yellow('\n⚠ Tunnel disconnected'));
     process.exit(0);
   });
 
   ws.on('error', (error) => {
+    if (heartbeatInterval) clearInterval(heartbeatInterval);
     console.error(chalk.red(`\n✗ Connection error: ${error.message}`));
     process.exit(1);
   });
 
   // Handle Ctrl+C
   process.on('SIGINT', () => {
+    if (heartbeatInterval) clearInterval(heartbeatInterval);
     console.log(chalk.yellow('\n\n⚠ Stopping tunnel...'));
     ws.close();
   });

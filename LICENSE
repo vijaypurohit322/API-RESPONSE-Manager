@@ -1,21 +1,140 @@
-MIT License
+API Response Manager - Proprietary License
+Copyright (c) 2025 Vijay Singh Purohit. All Rights Reserved.
 
-Copyright (c) 2025 Vijay Singh Purohit
+================================================================================
+                        TERMS AND CONDITIONS
+================================================================================
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+1. DEFINITIONS
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+   "Software" refers to API Response Manager, including all source code,
+   documentation, and associated files.
+   
+   "Author" or "Owner" refers to Vijay Singh Purohit (vijaypurohit322@gmail.com).
+   
+   "User" refers to any individual or organization using this Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+2. GRANT OF LICENSE
+
+   Subject to the terms of this License, the Author grants you a limited,
+   non-exclusive, non-transferable, revocable license to:
+
+   a) USE the Software for personal, educational, or internal business purposes.
+   
+   b) DEPLOY the Software on your own infrastructure (on-premises or self-hosted)
+      for non-commercial use.
+   
+   c) MODIFY the Software for your own personal or internal use, provided that
+      modified versions are not distributed.
+
+3. RESTRICTIONS
+
+   You may NOT:
+
+   a) SELL, resell, sublicense, rent, lease, or otherwise commercialize the
+      Software or any derivative works.
+   
+   b) USE the Software to provide commercial services, SaaS offerings, or any
+      monetized products without explicit written permission from the Author.
+   
+   c) DISTRIBUTE, publish, or share the Software or any modified versions
+      publicly without prior written consent from the Author.
+   
+   d) REMOVE or alter any copyright notices, license terms, or attribution
+      requirements from the Software.
+   
+   e) CLAIM ownership or authorship of the Software or any substantial portion
+      thereof.
+   
+   f) USE the Software in any way that competes with the Author's own commercial
+      offerings or services.
+
+4. ATTRIBUTION REQUIREMENTS
+
+   Any use of this Software MUST include:
+
+   a) Clear and visible attribution to the Author:
+      "API Response Manager by Vijay Singh Purohit"
+      
+   b) A link to the original repository:
+      https://github.com/vijaypurohit322/api-response-manager
+      
+   c) This license file must remain intact in all copies or deployments.
+
+5. COMMERCIAL USE
+
+   Commercial use, including but not limited to:
+   - Selling access to the Software
+   - Using the Software as part of a paid service
+   - Incorporating the Software into commercial products
+   - Providing hosted/managed services based on this Software
+   
+   Requires a separate commercial license agreement with the Author.
+   Contact: vijaypurohit322@gmail.com
+
+6. INTELLECTUAL PROPERTY
+
+   The Author retains all intellectual property rights, including but not
+   limited to copyrights, patents, trade secrets, and trademarks associated
+   with the Software.
+
+7. CONTRIBUTIONS
+
+   Any contributions submitted to this project become the property of the
+   Author and are subject to this License. Contributors grant the Author
+   a perpetual, worldwide, non-exclusive, royalty-free license to use,
+   modify, and distribute their contributions.
+
+8. TERMINATION
+
+   This License is effective until terminated. Your rights under this License
+   will terminate automatically without notice if you fail to comply with any
+   of its terms. Upon termination, you must destroy all copies of the Software
+   in your possession.
+
+9. DISCLAIMER OF WARRANTY
+
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+   FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT.
+
+10. LIMITATION OF LIABILITY
+
+    IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT, OR OTHERWISE, ARISING
+    FROM, OUT OF, OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+    DEALINGS IN THE SOFTWARE.
+
+11. GOVERNING LAW
+
+    This License shall be governed by and construed in accordance with the
+    laws of India, without regard to its conflict of law provisions.
+
+================================================================================
+                              SUMMARY
+================================================================================
+
+✅ ALLOWED:
+   - Personal and educational use
+   - Self-hosting for internal/non-commercial use
+   - Private modifications for personal use
+
+❌ NOT ALLOWED:
+   - Selling or reselling the Software
+   - Commercial use without license
+   - Removing attribution or copyright notices
+   - Public distribution of modified versions
+   - Using for competing commercial services
+
+📧 For commercial licensing inquiries:
+   Contact: vijaypurohit322@gmail.com
+
+================================================================================
+
+By using this Software, you acknowledge that you have read, understood, and
+agree to be bound by the terms and conditions of this License.
+
+Author: Vijay Singh Purohit
+Email: vijaypurohit322@gmail.com
+GitHub: https://github.com/vijaypurohit322
+Website: https://tunnelapi.in

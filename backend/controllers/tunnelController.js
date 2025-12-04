@@ -8,7 +8,7 @@ const generateSubdomain = () => {
 
 // Get base URL from environment or default
 const getBaseUrl = () => {
-  return process.env.TUNNEL_BASE_URL || 'tunnel.arm.dev';
+  return process.env.TUNNEL_BASE_URL || 'free-tunnelapi.app';
 };
 
 // Create a new tunnel

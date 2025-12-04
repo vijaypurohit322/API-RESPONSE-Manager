@@ -1,8 +1,8 @@
 # API Response Manager
 
-[![npm version](https://badge.fury.io/js/@vijaypurohit322-arm%2Fcli.svg)](https://www.npmjs.com/package/@vijaypurohit322-arm/cli)
-[![npm downloads](https://img.shields.io/npm/dt/api-response-manager)](https://www.npmjs.com/package/api-response-manager)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![npm version](https://img.shields.io/npm/v/api-response-manager.svg)](https://www.npmjs.com/package/api-response-manager)
+[![npm downloads](https://img.shields.io/npm/dt/api-response-manager.svg)](https://www.npmjs.com/package/api-response-manager)
+[![License: Proprietary](https://img.shields.io/badge/License-Proprietary-red.svg)](LICENSE)
 
 An interactive tool for developers to capture, share, and collaborate on API responses. Share your API testing results with team members using unique project links - no login required for viewers.
 
@@ -51,7 +51,7 @@ Demo SVG: <a>https://drive.google.com/uc?export=view&id=12eR09C2PcgCbvThRKtoSwpd
 
 Install the ARM CLI globally:
 ```bash
-npm install -g @arm/cli
+npm install -g api-response-manager
 ```
 
 Or use from source:
@@ -258,6 +258,254 @@ See [cli/README.md](cli/README.md) for complete CLI documentation.
    - Add comments to discuss specific responses
    - Team members can view and comment on shared projects
 
+## 🔌 Integration Examples
+
+### Node.js / Express
+
+```javascript
+const express = require('express');
+const axios = require('axios');
+
+const app = express();
+const ARM_API = 'https://api.tunnelapi.in/api';
+const PROJECT_ID = 'your-project-id';
+
+// Middleware to capture API responses
+app.use(async (req, res, next) => {
+  const originalSend = res.send;
+  res.send = async function(body) {
+    // Capture response to ARM
+    try {
+      await axios.post(`${ARM_API}/responses`, {
+        projectId: PROJECT_ID,
+        requestMethod: req.method,
+        requestUrl: req.originalUrl,
+        requestHeaders: req.headers,
+        requestBody: req.body,
+        responseStatusCode: res.statusCode,
+        responseHeaders: res.getHeaders(),
+        responseBody: JSON.parse(body)
+      });
+    } catch (err) {
+      console.error('ARM capture failed:', err.message);
+    }
+    return originalSend.call(this, body);
+  };
+  next();
+});
+
+app.get('/api/users', (req, res) => {
+  res.json({ users: [{ id: 1, name: 'John' }] });
+});
+
+app.listen(3000, () => console.log('Server running on port 3000'));
+```
+
+### Python / Flask
+
+```python
+from flask import Flask, request, jsonify, g
+import requests
+import json
+
+app = Flask(__name__)
+ARM_API = 'https://api.tunnelapi.in/api'
+PROJECT_ID = 'your-project-id'
+
+@app.after_request
+def capture_response(response):
+    """Capture API response to ARM"""
+    try:
+        requests.post(f'{ARM_API}/responses', json={
+            'projectId': PROJECT_ID,
+            'requestMethod': request.method,
+            'requestUrl': request.url,
+            'requestHeaders': dict(request.headers),
+            'requestBody': request.get_json(silent=True) or {},
+            'responseStatusCode': response.status_code,
+            'responseHeaders': dict(response.headers),
+            'responseBody': response.get_json(silent=True) or {}
+        }, timeout=5)
+    except Exception as e:
+        print(f'ARM capture failed: {e}')
+    return response
+
+@app.route('/api/users')
+def get_users():
+    return jsonify({'users': [{'id': 1, 'name': 'John'}]})
+
+if __name__ == '__main__':
+    app.run(port=5000)
+```
+
+### Python / Streamlit
+
+```python
+import streamlit as st
+import requests
+
+ARM_API = 'https://api.tunnelapi.in/api'
+PROJECT_ID = 'your-project-id'
+
+def capture_api_call(method, url, response_data, status_code=200):
+    """Capture API response to ARM"""
+    try:
+        requests.post(f'{ARM_API}/responses', json={
+            'projectId': PROJECT_ID,
+            'requestMethod': method,
+            'requestUrl': url,
+            'requestHeaders': {},
+            'requestBody': {},
+            'responseStatusCode': status_code,
+            'responseHeaders': {'Content-Type': 'application/json'},
+            'responseBody': response_data
+        }, timeout=5)
+    except Exception as e:
+        st.warning(f'ARM capture failed: {e}')
+
+# Example usage in Streamlit app
+st.title('My Streamlit App')
+
+if st.button('Fetch Data'):
+    # Make your API call
+    response = requests.get('https://api.example.com/data')
+    data = response.json()
+    
+    # Capture to ARM
+    capture_api_call('GET', 'https://api.example.com/data', data, response.status_code)
+    
+    st.json(data)
+```
+
+### Java / Spring Boot
+
+```java
+import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.client.RestTemplate;
+import javax.servlet.http.*;
+import java.util.*;
+
+@Component
+public class ARMCaptureFilter extends OncePerRequestFilter {
+    
+    private static final String ARM_API = "https://api.tunnelapi.in/api";
+    private static final String PROJECT_ID = "your-project-id";
+    
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, 
+                                    HttpServletResponse response,
+                                    FilterChain filterChain) throws Exception {
+        
+        ContentCachingResponseWrapper responseWrapper = 
+            new ContentCachingResponseWrapper(response);
+        
+        filterChain.doFilter(request, responseWrapper);
+        
+        // Capture response to ARM
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            Map<String, Object> payload = new HashMap<>();
+            payload.put("projectId", PROJECT_ID);
+            payload.put("requestMethod", request.getMethod());
+            payload.put("requestUrl", request.getRequestURL().toString());
+            payload.put("responseStatusCode", response.getStatus());
+            payload.put("responseBody", new String(responseWrapper.getContentAsByteArray()));
+            
+            restTemplate.postForObject(ARM_API + "/responses", payload, String.class);
+        } catch (Exception e) {
+            logger.error("ARM capture failed: " + e.getMessage());
+        }
+        
+        responseWrapper.copyBodyToResponse();
+    }
+}
+```
+
+### ASP.NET Core
+
+```csharp
+using Microsoft.AspNetCore.Mvc.Filters;
+using System.Net.Http;
+using System.Text.Json;
+
+public class ARMCaptureFilter : IAsyncResultFilter
+{
+    private static readonly string ARM_API = "https://api.tunnelapi.in/api";
+    private static readonly string PROJECT_ID = "your-project-id";
+    private readonly HttpClient _httpClient;
+
+    public ARMCaptureFilter(IHttpClientFactory httpClientFactory)
+    {
+        _httpClient = httpClientFactory.CreateClient();
+    }
+
+    public async Task OnResultExecutionAsync(ResultExecutingContext context, 
+                                              ResultExecutionDelegate next)
+    {
+        var resultContext = await next();
+        
+        try
+        {
+            var request = context.HttpContext.Request;
+            var response = context.HttpContext.Response;
+            
+            var payload = new
+            {
+                projectId = PROJECT_ID,
+                requestMethod = request.Method,
+                requestUrl = $"{request.Scheme}://{request.Host}{request.Path}",
+                requestHeaders = request.Headers.ToDictionary(h => h.Key, h => h.Value.ToString()),
+                responseStatusCode = response.StatusCode,
+                responseHeaders = response.Headers.ToDictionary(h => h.Key, h => h.Value.ToString()),
+                responseBody = new { } // Add your response body here
+            };
+
+            var content = new StringContent(
+                JsonSerializer.Serialize(payload),
+                Encoding.UTF8,
+                "application/json"
+            );
+
+            await _httpClient.PostAsync($"{ARM_API}/responses", content);
+        }
+        catch (Exception ex)
+        {
+            // Log error but don't fail the request
+            Console.WriteLine($"ARM capture failed: {ex.Message}");
+        }
+    }
+}
+
+// Register in Startup.cs or Program.cs
+services.AddControllers(options =>
+{
+    options.Filters.Add<ARMCaptureFilter>();
+});
+```
+
+### Using the Tunnel (Any Language)
+
+```bash
+# 1. Install CLI
+npm install -g api-response-manager
+
+# 2. Login
+arm login
+
+# 3. Start your local server (any language/framework)
+# Python: python app.py (running on port 5000)
+# Node: node server.js (running on port 3000)
+# Java: ./mvnw spring-boot:run (running on port 8080)
+
+# 4. Create tunnel to expose your local server
+arm tunnel 5000 -s myapi
+
+# 5. Your API is now accessible at:
+# https://myapi.free-tunnelapi.app
+```
+
+---
+
 ## Use Cases
 
 ### 1. **API Development & Testing**
@@ -355,7 +603,19 @@ curl https://myapi.tunnel.arm.dev/api/users
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This software is proprietary. See [LICENSE](LICENSE) for full terms.
+
+### Quick Summary:
+| ✅ Allowed | ❌ Not Allowed |
+|-----------|----------------|
+| Personal use | Selling or reselling |
+| Educational use | Commercial SaaS |
+| Self-hosting (non-commercial) | Public redistribution |
+| Private modifications | Removing attribution |
+
+**Attribution Required:** "API Response Manager by Vijay Singh Purohit"
+
+📧 **Commercial Licensing:** vijaypurohit322@gmail.com
 
 ## Acknowledgments
 
@@ -367,10 +627,53 @@ For issues, questions, or contributions, please open an issue on the GitHub repo
 
 ---
 
-**Version:** 2.3.1  <br>
-**Last Updated:** November 24, 2025 <br>
+**Version:** 2.5.0  <br>
+**Last Updated:** December 4, 2025 <br>
 **Author:** Vijay Singh Purohit <br>
 **Email:** <a href="mailto:vijaypurohit322@gmail.com?">vijaypurohit322@gmail.com</a>
+
+## 🎉 What's New in v2.5.0
+
+### 🔐 GDPR Compliance & User Privacy
+- **Profile Page** - View and manage your account data
+- **Settings Page** - General, Security, and Notification preferences
+- **Data Export** - Download all your data in JSON format (GDPR Article 20)
+- **Account Deletion** - Permanently delete your account and data (GDPR Article 17)
+- **Inactive Account Cleanup** - Auto-delete accounts after 15 days of inactivity
+- **Session Management** - View and revoke active sessions
+- **Display Name** - Editable user profile with save functionality
+
+### 🛡️ Security Enhancements
+- Password change with policy validation
+- Last login tracking
+- Current device highlighting in sessions
+- Enhanced SECURITY.md documentation
+
+### 📦 CLI & Package Updates
+- npm package: `api-response-manager`
+- Removed debug logs for security
+- Updated all badges and documentation
+
+---
+
+## 🎉 What's New in v2.4.0
+
+### 🚇 Production-Ready Tunneling (NEW!)
+- **Live Tunnel Service** - Fully functional secure tunneling at `free-tunnelapi.app`
+  * Create tunnels via CLI: `arm tunnel <port> -s <subdomain>`
+  * Wildcard SSL certificates for all subdomains
+  * Industry-standard timeouts (2-hour idle, 24-hour max session)
+  * Heartbeat keepalive (30-second intervals)
+  * Request logging and statistics
+- **CLI Improvements**
+  * Fixed tunnel connection stability
+  * Proper request/response proxying
+  * Graceful timeout handling with user notifications
+  * Request filtering in UI (All/Pages/API/Assets)
+- **Share Link Fix** - Fixed double `/api` URL issue in shared project pages
+- **Docker Improvements** - Host network mode for tunnel server, graceful container management
+
+---
 
 ## 🎉 What's New in v2.3.1
 

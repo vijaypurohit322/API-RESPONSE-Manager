@@ -46,7 +46,7 @@ const SocialLogin = () => {
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.75rem' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.75rem' }}>
         {/* Google */}
         <button
           onClick={handleGoogleLogin}
@@ -150,10 +150,12 @@ const SocialLogin = () => {
           )}
         </button>
 
-        {/* Microsoft */}
+        {/* Microsoft - Disabled until credentials are configured */}
+        {/* 
         <button
           onClick={handleMicrosoftLogin}
-          disabled={loading !== null}
+          disabled={true}
+          title="Microsoft login coming soon"
           style={{
             display: 'flex',
             alignItems: 'center',
@@ -162,39 +164,23 @@ const SocialLogin = () => {
             border: '1px solid var(--border-color)',
             borderRadius: 'var(--border-radius)',
             backgroundColor: 'var(--card-bg)',
-            color: 'var(--text-primary)',
+            color: 'var(--text-secondary)',
             fontSize: 'var(--font-size-sm)',
             fontWeight: '500',
-            cursor: loading !== null ? 'not-allowed' : 'pointer',
-            opacity: loading !== null ? 0.5 : 1,
+            cursor: 'not-allowed',
+            opacity: 0.5,
             transition: 'all 0.2s'
           }}
-          onMouseEnter={(e) => {
-            if (loading === null) e.currentTarget.style.backgroundColor = 'var(--hover-bg)';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = 'var(--card-bg)';
-          }}
         >
-          {loading === 'microsoft' ? (
-            <div style={{
-              width: '1.25rem',
-              height: '1.25rem',
-              border: '2px solid var(--border-color)',
-              borderTopColor: 'var(--primary-color)',
-              borderRadius: '50%',
-              animation: 'spin 1s linear infinite'
-            }}></div>
-          ) : (
-            <svg style={{ width: '1.25rem', height: '1.25rem' }} viewBox="0 0 23 23">
-              <path fill="#f3f3f3" d="M0 0h23v23H0z" />
-              <path fill="#f35325" d="M1 1h10v10H1z" />
-              <path fill="#81bc06" d="M12 1h10v10H12z" />
-              <path fill="#05a6f0" d="M1 12h10v10H1z" />
-              <path fill="#ffba08" d="M12 12h10v10H12z" />
-            </svg>
-          )}
+          <svg style={{ width: '1.25rem', height: '1.25rem' }} viewBox="0 0 23 23">
+            <path fill="#f3f3f3" d="M0 0h23v23H0z" />
+            <path fill="#f35325" d="M1 1h10v10H1z" />
+            <path fill="#81bc06" d="M12 1h10v10H12z" />
+            <path fill="#05a6f0" d="M1 12h10v10H1z" />
+            <path fill="#ffba08" d="M12 12h10v10H12z" />
+          </svg>
         </button>
+        */}
       </div>
     </div>
   );

@@ -2,7 +2,7 @@
 
 ## Overview
 
-The tunnel service enables developers to expose their local APIs to the internet with secure public URLs, similar to ngrok or Tunnelmole. This guide covers installation, configuration, and usage.
+The tunnel service enables developers to expose their local APIs to the internet with secure public URLs. This guide covers installation, configuration, and usage.
 
 ## Architecture
 
