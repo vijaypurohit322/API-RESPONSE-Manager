@@ -4,7 +4,8 @@ const path = require('path');
 const config = new Conf({
   projectName: 'arm-cli',
   defaults: {
-    apiUrl: 'http://localhost:5000/api',
+    apiUrl: 'https://api.tunnelapi.in/api',
+    API_URL: 'https://api.tunnelapi.in/api', // Support both camelCase and UPPER_CASE
     token: null,
     userId: null,
     email: null,
@@ -13,6 +14,10 @@ const config = new Conf({
   },
   schema: {
     apiUrl: {
+      type: 'string',
+      format: 'uri'
+    },
+    API_URL: {
       type: 'string',
       format: 'uri'
     },

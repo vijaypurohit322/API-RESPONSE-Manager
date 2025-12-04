@@ -4,7 +4,8 @@ const chalk = require('chalk');
 
 class APIClient {
   constructor() {
-    this.baseURL = config.get('apiUrl') || 'http://localhost:5000/api';
+    // Check both API_URL and apiUrl for backwards compatibility
+    this.baseURL = config.get('API_URL') || config.get('apiUrl') || 'https://api.tunnelapi.in/api';
     this.client = axios.create({
       baseURL: this.baseURL,
       timeout: 30000,

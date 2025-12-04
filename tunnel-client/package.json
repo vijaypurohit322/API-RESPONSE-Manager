@@ -11,10 +11,10 @@
   },
   "keywords": [
     "tunnel",
-    "ngrok",
-    "tunnelmole",
+    "api",
     "client",
-    "proxy"
+    "proxy",
+    "secure-tunnel"
   ],
   "author": "Vijay Singh Purohit",
   "license": "MIT",

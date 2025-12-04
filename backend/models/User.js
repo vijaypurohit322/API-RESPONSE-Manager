@@ -31,6 +31,14 @@ const UserSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  lastLogin: {
+    type: Date,
+    default: null,
+  },
+  defaultPort: {
+    type: Number,
+    default: 3000,
+  },
   createdAt: {
     type: Date,
     default: Date.now,

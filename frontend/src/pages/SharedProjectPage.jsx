@@ -16,20 +16,42 @@ const SharedProjectPage = () => {
     loadSharedProject();
   }, [token]);
 
+  // VITE_API_URL already includes /api suffix, so we use it directly
+  const API_URL = import.meta.env.VITE_API_URL ?? 'https://api.tunnelapi.in/api';
+
   const loadSharedProject = async () => {
     try {
       setLoading(true);
+      console.log(`Loading shared project with token: ${token}`);
+      console.log(`API URL: ${API_URL}`);
+      
       // Get project by share token
-      const projectRes = await axios.get(`http://localhost:5000/api/projects/share/${token}`);
+      console.log(`Fetching project from: ${API_URL}/projects/share/${token}`);
+      const projectRes = await axios.get(`${API_URL}/projects/share/${token}`);
+      console.log('Project data received:', projectRes.data);
       setProject(projectRes.data);
       
       // Get responses for this project
-      const responsesRes = await axios.get(`http://localhost:5000/api/responses/${projectRes.data._id}`);
+      console.log(`Fetching responses for project ID: ${projectRes.data._id}`);
+      const responsesRes = await axios.get(`${API_URL}/responses/${projectRes.data._id}`);
+      console.log('Responses data received:', responsesRes.data);
       setResponses(responsesRes.data);
       setLoading(false);
     } catch (error) {
       console.error('Failed to load shared project', error);
-      setError(error.response?.status === 404 ? 'Project not found' : 'Failed to load project');
+      console.error('Error response status:', error.response?.status);
+      console.error('Error response data:', error.response?.data);
+      console.error('Error message:', error.message);
+      
+      if (error.response?.status === 404) {
+        setError('Project not found');
+      } else if (error.response?.status === 400) {
+        setError('Invalid share link');
+      } else if (error.response?.status === 429) {
+        setError('Too many requests - please try again later');
+      } else {
+        setError('Failed to load project');
+      }
       setLoading(false);
     }
   };

@@ -11,6 +11,8 @@ import TunnelsPage from './pages/TunnelsPage';
 import TunnelDetailPage from './pages/TunnelDetailPage';
 import WebhooksPage from './pages/WebhooksPage';
 import WebhookDetailPage from './pages/WebhookDetailPage';
+import ProfilePage from './pages/ProfilePage';
+import SettingsPage from './pages/SettingsPage';
 import OAuthCallback from './pages/OAuthCallback';
 import DeviceAuthPage from './pages/DeviceAuthPage';
 import './App.css';
@@ -51,6 +53,14 @@ const App = () => {
         <Route
           path="/webhooks/:id"
           element={currentUser ? <WebhookDetailPage /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/profile"
+          element={currentUser ? <ProfilePage /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/settings"
+          element={currentUser ? <SettingsPage /> : <Navigate to="/login" />}
         />
         <Route
           path="/"

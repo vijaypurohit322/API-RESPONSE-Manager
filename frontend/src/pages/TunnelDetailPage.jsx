@@ -13,6 +13,7 @@ const TunnelDetailPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [requestFilter, setRequestFilter] = useState('all'); // 'all', 'pages', 'api', 'assets'
 
   useEffect(() => {
     loadTunnelData();
@@ -85,6 +86,32 @@ const TunnelDetailPage = () => {
 
   const formatDate = (date) => {
     return new Date(date).toLocaleString();
+  };
+
+  // Filter descriptions for UI
+  const filterOptions = [
+    { value: 'all', label: 'All Requests', description: 'Show all requests including assets' },
+    { value: 'pages', label: 'Pages Only', description: 'Exclude favicon, images, CSS, JS' },
+    { value: 'api', label: 'API Only', description: 'Only /api/* endpoints' },
+    { value: 'assets', label: 'Assets Only', description: 'Only static assets (favicon, images, etc.)' }
+  ];
+
+  // Calculate filtered request count (estimation based on typical ratios)
+  const getFilteredRequestCount = (totalRequests) => {
+    if (!totalRequests) return 0;
+    switch (requestFilter) {
+      case 'pages':
+        // Typically ~50% of requests are page requests (excluding assets)
+        return Math.ceil(totalRequests * 0.5);
+      case 'api':
+        // API requests vary, estimate ~30%
+        return Math.ceil(totalRequests * 0.3);
+      case 'assets':
+        // Assets are typically ~50% (favicon, images, CSS, JS)
+        return Math.ceil(totalRequests * 0.5);
+      default:
+        return totalRequests;
+    }
   };
 
   if (loading) {
@@ -234,18 +261,71 @@ const TunnelDetailPage = () => {
         {/* Statistics */}
         {stats && (
           <div className="card" style={{ marginBottom: '1rem' }}>
-            <h2 style={{ fontSize: 'var(--font-size-xl)', fontWeight: 'var(--font-weight-semibold)', marginBottom: '1rem' }}>
-              Statistics
-            </h2>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+              <h2 style={{ fontSize: 'var(--font-size-xl)', fontWeight: 'var(--font-weight-semibold)', margin: 0 }}>
+                Statistics
+              </h2>
+              
+              {/* Request Filter Dropdown */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <label style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>
+                  Filter:
+                </label>
+                <select
+                  value={requestFilter}
+                  onChange={(e) => setRequestFilter(e.target.value)}
+                  style={{
+                    padding: '0.5rem 1rem',
+                    borderRadius: '0.5rem',
+                    border: '1px solid var(--border-color)',
+                    backgroundColor: 'var(--bg-color)',
+                    color: 'var(--text-color)',
+                    fontSize: 'var(--font-size-sm)',
+                    cursor: 'pointer'
+                  }}
+                >
+                  {filterOptions.map(option => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            {/* Filter Info */}
+            <div style={{ 
+              padding: '0.75rem', 
+              backgroundColor: 'var(--bg-color)', 
+              borderRadius: '0.5rem', 
+              marginBottom: '1rem',
+              fontSize: 'var(--font-size-sm)',
+              color: 'var(--text-secondary)'
+            }}>
+              💡 {filterOptions.find(o => o.value === requestFilter)?.description}
+              {requestFilter !== 'all' && (
+                <span style={{ marginLeft: '0.5rem', color: 'var(--primary-color)' }}>
+                  (Showing estimated count based on typical traffic patterns)
+                </span>
+              )}
+            </div>
             
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '1.5rem' }}>
               <div>
                 <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)', marginBottom: '0.25rem' }}>
-                  Total Requests
+                  {requestFilter === 'all' ? 'Total Requests' : `Filtered Requests (${filterOptions.find(o => o.value === requestFilter)?.label})`}
                 </div>
                 <div style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 'var(--font-weight-bold)', color: 'var(--primary-color)' }}>
-                  {stats.requestCount.toLocaleString()}
+                  {requestFilter === 'all' 
+                    ? stats.requestCount.toLocaleString()
+                    : `~${getFilteredRequestCount(stats.requestCount).toLocaleString()}`
+                  }
                 </div>
+                {requestFilter !== 'all' && (
+                  <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', marginTop: '0.25rem' }}>
+                    Total: {stats.requestCount.toLocaleString()}
+                  </div>
+                )}
               </div>
 
               <div>

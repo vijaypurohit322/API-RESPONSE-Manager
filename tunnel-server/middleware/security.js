@@ -76,9 +76,66 @@ class SecurityMiddleware {
       case 'token':
         return this.checkTokenAuth(req, config);
       
+      case 'saml':
+        return this.checkSAMLAuth(req, config);
+      
+      case 'oauth':
+      case 'oidc':
+        return this.checkOAuthSession(req, config);
+      
       default:
         return { allowed: true };
     }
+  }
+
+  // Check SAML Authentication
+  checkSAMLAuth(req, config) {
+    const samlHandler = require('../auth/samlHandler');
+    const sessionId = req.cookies?.saml_session;
+
+    if (!sessionId) {
+      // Redirect to SAML login
+      return {
+        allowed: false,
+        statusCode: 302,
+        headers: { 'Location': `/auth/saml/login?tunnelId=${config.tunnelId}` },
+        message: 'SAML authentication required'
+      };
+    }
+
+    const result = samlHandler.verifySession(sessionId);
+    
+    if (result.valid) {
+      // Attach user info to request
+      req.samlUser = result.user;
+      return { allowed: true };
+    }
+
+    // Session invalid or expired, redirect to login
+    return {
+      allowed: false,
+      statusCode: 302,
+      headers: { 'Location': `/auth/saml/login?tunnelId=${config.tunnelId}` },
+      message: 'SAML session expired'
+    };
+  }
+
+  // Check OAuth/OIDC session
+  checkOAuthSession(req, config) {
+    const sessionId = req.cookies?.oauth_session;
+
+    if (!sessionId) {
+      return {
+        allowed: false,
+        statusCode: 302,
+        headers: { 'Location': `/auth/oauth/login?tunnelId=${config.tunnelId}` },
+        message: 'OAuth authentication required'
+      };
+    }
+
+    // For now, just check if session cookie exists
+    // In production, validate against session store
+    return { allowed: true };
   }
 
   // Check Basic Authentication

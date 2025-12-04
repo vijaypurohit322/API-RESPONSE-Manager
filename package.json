@@ -1,6 +1,6 @@
 {
   "name": "api-response-manager",
-  "version": "2.3.1",
+  "version": "2.5.0",
   "description": "Capture, share, and collaborate on API responses with your team using shareable project links.",
   "main": "index.js",
   "scripts": {
@@ -12,7 +12,7 @@
   },
   "keywords": [],
   "author": "Vijay Singh Purohit",
-  "license": "ISC",
+  "license": "SEE LICENSE IN LICENSE",
   "type": "commonjs",
   "bugs": {
     "url": "https://github.com/vijaypurohit322/API-RESPONSE-Manager/issues"
