@@ -35,6 +35,9 @@ const OAuthCallback = ({ provider }) => {
         const isDeviceAuth = sessionStorage.getItem('device_auth') === 'true';
         const deviceCode = sessionStorage.getItem('device_code');
 
+        // Get the redirect_uri that was used (must match what was sent to OAuth provider)
+        const redirectUri = `${window.location.origin}/auth/${provider}/callback`;
+
         if (isDeviceAuth && deviceCode) {
           // Device authentication flow
           const response = await fetch(
@@ -44,7 +47,7 @@ const OAuthCallback = ({ provider }) => {
               headers: {
                 'Content-Type': 'application/json',
               },
-              body: JSON.stringify({ code }),
+              body: JSON.stringify({ code, redirect_uri: redirectUri }),
             }
           );
 
@@ -89,7 +92,7 @@ const OAuthCallback = ({ provider }) => {
               headers: {
                 'Content-Type': 'application/json',
               },
-              body: JSON.stringify({ code }),
+              body: JSON.stringify({ code, redirect_uri: redirectUri }),
             }
           );
 

@@ -7,7 +7,7 @@ const User = require('../models/User');
 // Google OAuth
 router.post('/google', async (req, res) => {
   try {
-    const { token, code } = req.body;
+    const { token, code, redirect_uri } = req.body;
 
     let email, name, picture, googleId;
 
@@ -22,15 +22,19 @@ router.post('/google', async (req, res) => {
       picture = response.data.picture;
       googleId = response.data.sub;
     } else if (code) {
-      // CLI device flow - OAuth code exchange
+      // OAuth code exchange (web or CLI)
       console.log('Google OAuth - Received code:', code ? 'Yes' : 'No');
       console.log('Google OAuth - Client ID:', process.env.GOOGLE_CLIENT_ID ? 'Set' : 'Missing');
       console.log('Google OAuth - Client Secret:', process.env.GOOGLE_CLIENT_SECRET ? 'Set' : 'Missing');
+      console.log('Google OAuth - Redirect URI:', redirect_uri || 'Using default');
 
       if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
         console.error('Google OAuth credentials not configured');
         return res.status(500).json({ msg: 'Google OAuth not configured on server' });
       }
+
+      // Use redirect_uri from request, or fall back to FRONTEND_URL
+      const callbackUri = redirect_uri || `${process.env.FRONTEND_URL || 'http://localhost:5173'}/auth/google/callback`;
 
       // Exchange code for access token
       const tokenResponse = await axios.post(
@@ -39,7 +43,7 @@ router.post('/google', async (req, res) => {
           client_id: process.env.GOOGLE_CLIENT_ID,
           client_secret: process.env.GOOGLE_CLIENT_SECRET,
           code,
-          redirect_uri: `${process.env.FRONTEND_URL || 'http://localhost:5173'}/auth/google/callback`,
+          redirect_uri: callbackUri,
           grant_type: 'authorization_code'
         }
       );
@@ -67,8 +71,8 @@ router.post('/google', async (req, res) => {
       return res.status(400).json({ msg: 'Email not provided by Google' });
     }
 
-    // Check if user exists
-    let user = await User.findOne({ email });
+    // Check if user exists (using hash for encrypted email lookup)
+    let user = await User.findByEmail(email);
 
     if (!user) {
       // Create new user
@@ -183,8 +187,8 @@ router.post('/github', async (req, res) => {
       return res.status(400).json({ msg: 'Email not provided by GitHub' });
     }
 
-    // Check if user exists
-    let user = await User.findOne({ email: userEmail });
+    // Check if user exists (using hash for encrypted email lookup)
+    let user = await User.findByEmail(userEmail);
 
     if (!user) {
       // Create new user
@@ -220,7 +224,15 @@ router.post('/github', async (req, res) => {
       { expiresIn: '7d' },
       (err, token) => {
         if (err) throw err;
-        res.json({ token });
+        res.json({ 
+          token,
+          user: {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            avatar: user.avatar
+          }
+        });
       }
     );
   } catch (error) {
@@ -267,8 +279,8 @@ router.post('/microsoft', async (req, res) => {
       return res.status(400).json({ msg: 'Email not provided by Microsoft' });
     }
 
-    // Check if user exists
-    let user = await User.findOne({ email });
+    // Check if user exists (using hash for encrypted email lookup)
+    let user = await User.findByEmail(email);
 
     if (!user) {
       // Create new user
@@ -302,7 +314,15 @@ router.post('/microsoft', async (req, res) => {
       { expiresIn: '7d' },
       (err, token) => {
         if (err) throw err;
-        res.json({ token });
+        res.json({ 
+          token,
+          user: {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            avatar: user.avatar
+          }
+        });
       }
     );
   } catch (error) {

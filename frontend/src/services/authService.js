@@ -84,7 +84,16 @@ const login = (email, password) => {
     })
     .then((response) => {
       if (response.data.token) {
-        localStorage.setItem('user', JSON.stringify(response.data));
+        // Ensure user data is properly structured
+        const userData = {
+          token: response.data.token,
+          user: response.data.user || {
+            email: email,
+            name: '',
+            provider: 'local'
+          }
+        };
+        localStorage.setItem('user', JSON.stringify(userData));
       }
       return response.data;
     });

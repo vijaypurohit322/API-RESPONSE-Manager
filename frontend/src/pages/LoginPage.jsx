@@ -6,23 +6,52 @@ import SocialLogin from '../components/SocialLogin';
 import Logo from '../components/Logo';
 import '../App.css';
 
+const API_URL = import.meta.env.VITE_API_URL || 'https://api.tunnelapi.in/api';
+
 const LoginPage = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
+  const [needsVerification, setNeedsVerification] = useState(false);
+  const [resending, setResending] = useState(false);
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
     setMessage('');
+    setNeedsVerification(false);
     try {
       await authService.login(email, password);
       navigate('/dashboard');
     } catch (error) {
-      setMessage(error.response?.data?.msg || 'Failed to login. Please check your credentials.');
+      const errorData = error.response?.data;
+      if (errorData?.requiresVerification) {
+        setNeedsVerification(true);
+        setMessage(errorData.msg);
+      } else {
+        setMessage(errorData?.msg || 'Failed to login. Please check your credentials.');
+      }
       setLoading(false);
+    }
+  };
+
+  const handleResendVerification = async () => {
+    setResending(true);
+    try {
+      const response = await fetch(`${API_URL}/auth/resend-verification`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      const data = await response.json();
+      setMessage(data.msg);
+      setNeedsVerification(false);
+    } catch (error) {
+      setMessage('Failed to resend verification email.');
+    } finally {
+      setResending(false);
     }
   };
 
@@ -47,8 +76,32 @@ const LoginPage = () => {
         </div>
 
         {message && (
-          <div className="alert alert-error">
+          <div className={`alert ${needsVerification ? 'alert-warning' : 'alert-error'}`} style={{
+            background: needsVerification ? 'rgba(245, 158, 11, 0.1)' : undefined,
+            borderColor: needsVerification ? 'rgba(245, 158, 11, 0.3)' : undefined,
+            color: needsVerification ? '#f59e0b' : undefined
+          }}>
             {message}
+            {needsVerification && (
+              <button
+                onClick={handleResendVerification}
+                disabled={resending}
+                style={{
+                  display: 'block',
+                  marginTop: '0.75rem',
+                  padding: '0.5rem 1rem',
+                  background: 'var(--primary-color)',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '6px',
+                  cursor: resending ? 'not-allowed' : 'pointer',
+                  fontSize: '0.875rem',
+                  width: '100%'
+                }}
+              >
+                {resending ? 'Sending...' : 'Resend Verification Email'}
+              </button>
+            )}
           </div>
         )}
 

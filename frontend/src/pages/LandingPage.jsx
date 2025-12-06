@@ -120,6 +120,9 @@ const LandingPage = () => {
             <a href="#use-cases">Use Cases</a>
             <a href="#cli">CLI</a>
             <a href="#pricing">Pricing</a>
+            <a href="https://docs.tunnelapi.in" target="_blank" rel="noopener noreferrer">
+              Docs
+            </a>
             <a href="https://github.com/vijaypurohit322/api-response-manager" target="_blank" rel="noopener noreferrer">
               GitHub
             </a>
@@ -208,7 +211,7 @@ const LandingPage = () => {
             </div>
             <div className="terminal-output indent">
               <span className="label">Public URL:</span>
-              <span className="url">https://myapp.tunnelapi.in</span>
+              <span className="url">https://myapp.free-tunnelapi.app</span>
             </div>
             <div className="terminal-output indent">
               <span className="label">Local Port:</span>
@@ -241,6 +244,93 @@ const LandingPage = () => {
                 <p className="feature-description">{feature.description}</p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* How It Works Section */}
+      <section id="how-it-works" className="how-it-works-section">
+        <div className="section-container">
+          <div className="section-header">
+            <span className="section-badge">How It Works</span>
+            <h2 className="section-title">From Local to Live in 3 Steps</h2>
+            <p className="section-subtitle">
+              No complex setup. No configuration files. Just install and go.
+            </p>
+          </div>
+
+          <div className="steps-grid">
+            <div className="step-card">
+              <div className="step-number">1</div>
+              <h3>Install CLI</h3>
+              <p>One command to install globally via npm</p>
+              <code>npm install -g api-response-manager</code>
+            </div>
+            <div className="step-card">
+              <div className="step-number">2</div>
+              <h3>Authenticate</h3>
+              <p>Login with Google, GitHub, or email</p>
+              <code>arm login</code>
+            </div>
+            <div className="step-card">
+              <div className="step-number">3</div>
+              <h3>Go Live</h3>
+              <p>Your localhost is now accessible worldwide</p>
+              <code>arm tunnel 3000</code>
+            </div>
+          </div>
+
+          <div className="how-it-works-visual">
+            <div className="flow-diagram animated">
+              <div className="flow-item">
+                <div className="flow-icon-wrapper">
+                  <span className="flow-icon">💻</span>
+                  <div className="pulse-ring"></div>
+                </div>
+                <span className="flow-label">Your Machine</span>
+                <span className="flow-detail">localhost:3000</span>
+              </div>
+              
+              <div className="flow-connector">
+                <div className="connector-line">
+                  <div className="data-packet packet-1"></div>
+                  <div className="data-packet packet-2"></div>
+                  <div className="data-packet packet-3"></div>
+                </div>
+                <span className="connector-label">Encrypted</span>
+              </div>
+              
+              <div className="flow-item highlight center-node">
+                <div className="flow-icon-wrapper">
+                  <span className="flow-icon">🚇</span>
+                  <div className="pulse-ring active"></div>
+                </div>
+                <span className="flow-label">TunnelAPI</span>
+                <span className="flow-detail">Secure WebSocket</span>
+                <div className="status-indicator">
+                  <span className="status-dot"></span>
+                  <span>Live</span>
+                </div>
+              </div>
+              
+              <div className="flow-connector">
+                <div className="connector-line reverse">
+                  <div className="data-packet packet-1"></div>
+                  <div className="data-packet packet-2"></div>
+                  <div className="data-packet packet-3"></div>
+                </div>
+                <span className="connector-label">HTTPS</span>
+              </div>
+              
+              <div className="flow-item">
+                <div className="flow-icon-wrapper">
+                  <span className="flow-icon">🌍</span>
+                  <div className="pulse-ring"></div>
+                </div>
+                <span className="flow-label">The Internet</span>
+                <span className="flow-detail">myapp.free-tunnelapi.app</span>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -340,7 +430,8 @@ const LandingPage = () => {
             <p className="section-subtitle">Start free, upgrade when you need more.</p>
           </div>
 
-          <div className="pricing-grid">
+          <div className="pricing-grid four-cols">
+            {/* Free Plan */}
             <div className="pricing-card">
               <div className="pricing-header">
                 <h3>Free</h3>
@@ -350,35 +441,64 @@ const LandingPage = () => {
                 </div>
               </div>
               <ul className="pricing-features">
+                <li><span className="check">✓</span> 1 User</li>
                 <li><span className="check">✓</span> 1 Active Tunnel</li>
+                <li><span className="check">✓</span> 2 Webhook Endpoints</li>
+                <li><span className="check">✓</span> 1K HTTP Requests/mo</li>
+                <li><span className="check">✓</span> 100 MB Bandwidth/mo</li>
                 <li><span className="check">✓</span> Random Subdomain</li>
                 <li><span className="check">✓</span> 2 Hour Session Limit</li>
-                <li><span className="check">✓</span> Basic Analytics</li>
                 <li><span className="check">✓</span> Community Support</li>
               </ul>
               <Link to="/register" className="btn-pricing">Get Started</Link>
             </div>
 
-            <div className="pricing-card featured">
-              <div className="pricing-badge">Most Popular</div>
+            {/* Solo Plan */}
+            <div className="pricing-card">
               <div className="pricing-header">
-                <h3>Pro</h3>
+                <h3>Solo</h3>
                 <div className="price">
-                  <span className="amount">$12</span>
+                  <span className="amount">$9</span>
                   <span className="period">/month</span>
                 </div>
               </div>
               <ul className="pricing-features">
-                <li><span className="check">✓</span> 10 Active Tunnels</li>
+                <li><span className="check">✓</span> 1 User</li>
+                <li><span className="check">✓</span> 3 Active Tunnels</li>
+                <li><span className="check">✓</span> 10 Webhook Endpoints</li>
+                <li><span className="check">✓</span> 50K HTTP Requests/mo</li>
+                <li><span className="check">✓</span> 5 GB Bandwidth/mo</li>
                 <li><span className="check">✓</span> Custom Subdomains</li>
-                <li><span className="check">✓</span> Unlimited Session Time</li>
-                <li><span className="check">✓</span> Advanced Analytics</li>
-                <li><span className="check">✓</span> Priority Support</li>
+                <li><span className="check">✓</span> Unlimited Sessions</li>
+                <li><span className="check">✓</span> Email Support</li>
+              </ul>
+              <Link to="/register" className="btn-pricing">Start Free Trial</Link>
+            </div>
+
+            {/* Team Plan */}
+            <div className="pricing-card featured">
+              <div className="pricing-badge">Most Popular</div>
+              <div className="pricing-header">
+                <h3>Team</h3>
+                <div className="price">
+                  <span className="amount">$29</span>
+                  <span className="period">/month</span>
+                </div>
+              </div>
+              <ul className="pricing-features">
+                <li><span className="check">✓</span> Up to 5 Users</li>
+                <li><span className="check">✓</span> 10 Active Tunnels</li>
+                <li><span className="check">✓</span> 50 Webhook Endpoints</li>
+                <li><span className="check">✓</span> 500K HTTP Requests/mo</li>
+                <li><span className="check">✓</span> 50 GB Bandwidth/mo</li>
+                <li><span className="check">✓</span> Custom Subdomains</li>
                 <li><span className="check">✓</span> IP Whitelisting</li>
+                <li><span className="check">✓</span> Priority Support</li>
               </ul>
               <Link to="/register" className="btn-pricing primary">Start Free Trial</Link>
             </div>
 
+            {/* Enterprise Plan */}
             <div className="pricing-card">
               <div className="pricing-header">
                 <h3>Enterprise</h3>
@@ -387,12 +507,14 @@ const LandingPage = () => {
                 </div>
               </div>
               <ul className="pricing-features">
+                <li><span className="check">✓</span> Unlimited Users</li>
                 <li><span className="check">✓</span> Unlimited Tunnels</li>
+                <li><span className="check">✓</span> Unlimited Endpoints</li>
+                <li><span className="check">✓</span> Unlimited Requests</li>
+                <li><span className="check">✓</span> Unlimited Bandwidth</li>
                 <li><span className="check">✓</span> Custom Domain</li>
                 <li><span className="check">✓</span> SAML/SSO Integration</li>
-                <li><span className="check">✓</span> Dedicated Support</li>
-                <li><span className="check">✓</span> SLA Guarantee</li>
-                <li><span className="check">✓</span> On-Premise Option</li>
+                <li><span className="check">✓</span> Dedicated Support + SLA</li>
               </ul>
               <a href="mailto:vijaypurohit322@gmail.com" className="btn-pricing">Contact Sales</a>
             </div>
@@ -449,8 +571,9 @@ const LandingPage = () => {
               </div>
               <div className="footer-column">
                 <h4>Resources</h4>
-                <a href="https://github.com/vijaypurohit322/api-response-manager#readme" target="_blank" rel="noopener noreferrer">Documentation</a>
-                <a href="https://github.com/vijaypurohit322/api-response-manager/blob/main/cli/README.md" target="_blank" rel="noopener noreferrer">CLI Docs</a>
+                <a href="https://docs.tunnelapi.in" target="_blank" rel="noopener noreferrer">Documentation</a>
+                <a href="https://docs.tunnelapi.in/cli/overview" target="_blank" rel="noopener noreferrer">CLI Reference</a>
+                <a href="https://docs.tunnelapi.in/getting-started/quick-start" target="_blank" rel="noopener noreferrer">Quick Start</a>
                 <a href="https://github.com/vijaypurohit322/api-response-manager/issues" target="_blank" rel="noopener noreferrer">Support</a>
               </div>
               <div className="footer-column">

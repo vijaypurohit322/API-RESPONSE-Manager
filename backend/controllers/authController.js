@@ -1,7 +1,9 @@
 const bcrypt = require('bcrypt');
+const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const logger = require('../utils/logger');
+const { sendVerificationEmail } = require('../services/emailService');
 
 /**
  * Password Policy (ISO 27001 A.9.4.3, OWASP A07:2021)
@@ -42,7 +44,7 @@ const validateEmail = (email) => {
 };
 
 exports.register = async (req, res) => {
-  const { email, password } = req.body;
+  const { name, email, password } = req.body;
   
   try {
     // Input validation (OWASP A03:2021)
@@ -56,18 +58,26 @@ exports.register = async (req, res) => {
       return res.status(400).json({ msg: passwordValidation.message });
     }
 
-    // Check if user exists
-    let user = await User.findOne({ email: email.toLowerCase().trim() });
+    // Check if user exists (using hash for encrypted email lookup)
+    let user = await User.findByEmail(email);
     if (user) {
       // Security: Don't reveal if email exists (OWASP A07:2021)
       logger.info('Registration attempt for existing email', { email: email.substring(0, 3) + '***' });
       return res.status(400).json({ msg: 'Registration failed. Please try again or login.' });
     }
 
-    // Create user with sanitized email
+    // Generate email verification token
+    const verificationToken = crypto.randomBytes(32).toString('hex');
+    const verificationExpires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+
+    // Create user with sanitized email and name
     user = new User({
       email: email.toLowerCase().trim(),
+      name: name ? name.trim().substring(0, 100) : '',
       password,
+      emailVerified: false,
+      emailVerificationToken: verificationToken,
+      emailVerificationExpires: verificationExpires,
     });
 
     // Hash password with bcrypt (ISO 27001 A.9.4.3)
@@ -76,27 +86,23 @@ exports.register = async (req, res) => {
     
     await user.save();
     
+    // Send verification email
+    try {
+      await sendVerificationEmail(user.email, user.name, verificationToken);
+    } catch (emailError) {
+      logger.error('Failed to send verification email', { error: emailError.message });
+      // Continue registration even if email fails
+    }
+    
     // Audit log (ISO 27001 A.12.4.1)
-    logger.info('User registered', { userId: user.id });
+    logger.info('User registered, verification email sent', { userId: user.id });
 
-    const payload = {
-      user: {
-        id: user.id,
-      },
-    };
-
-    jwt.sign(
-      payload,
-      process.env.JWT_SECRET,
-      { expiresIn: '7d', algorithm: 'HS256' },
-      (err, token) => {
-        if (err) {
-          logger.error('JWT signing error', { error: err.message });
-          return res.status(500).json({ msg: 'Authentication error' });
-        }
-        res.json({ token });
-      }
-    );
+    // Return success without token - user must verify email first
+    res.json({ 
+      msg: 'Registration successful. Please check your email to verify your account.',
+      requiresVerification: true,
+      email: user.email
+    });
   } catch (err) {
     logger.error('Registration error', { error: err.message });
     res.status(500).json({ msg: 'Server error' });
@@ -112,8 +118,8 @@ exports.login = async (req, res) => {
       return res.status(400).json({ msg: 'Email and password are required' });
     }
 
-    // Find user with case-insensitive email
-    let user = await User.findOne({ email: email.toLowerCase().trim() });
+    // Find user with encrypted email (using hash lookup)
+    let user = await User.findByEmail(email);
     
     // Security: Use constant-time comparison to prevent timing attacks (OWASP A07:2021)
     if (!user) {
@@ -127,6 +133,16 @@ exports.login = async (req, res) => {
     if (!isMatch) {
       logger.info('Failed login attempt - wrong password', { userId: user.id });
       return res.status(400).json({ msg: 'Invalid credentials' });
+    }
+
+    // Check if email is verified (only for local accounts)
+    if (user.provider === 'local' && !user.emailVerified) {
+      logger.info('Login attempt with unverified email', { userId: user.id });
+      return res.status(403).json({ 
+        msg: 'Please verify your email before logging in. Check your inbox for the verification link.',
+        requiresVerification: true,
+        email: user.email
+      });
     }
 
     // Audit log (ISO 27001 A.12.4.1)
@@ -151,7 +167,16 @@ exports.login = async (req, res) => {
           logger.error('JWT signing error', { error: err.message });
           return res.status(500).json({ msg: 'Authentication error' });
         }
-        res.json({ token });
+        res.json({ 
+          token,
+          user: {
+            id: user._id,
+            email: user.email,
+            name: user.name || '',
+            avatar: user.avatar,
+            provider: user.provider || 'local'
+          }
+        });
       }
     );
   } catch (err) {
@@ -288,6 +313,124 @@ exports.revokeAllSessions = async (req, res) => {
     res.json({ msg: 'All other sessions revoked' });
   } catch (err) {
     logger.error('Revoke all sessions error', { error: err.message, userId: req.user?.id });
+    res.status(500).json({ msg: 'Server error' });
+  }
+};
+
+/**
+ * Verify email address
+ */
+exports.verifyEmail = async (req, res) => {
+  try {
+    const { token } = req.query;
+
+    if (!token) {
+      return res.status(400).json({ msg: 'Verification token is required' });
+    }
+
+    // Find user with matching token that hasn't expired
+    const user = await User.findOne({
+      emailVerificationToken: token,
+      emailVerificationExpires: { $gt: Date.now() }
+    });
+
+    if (!user) {
+      return res.status(400).json({ 
+        msg: 'Invalid or expired verification link. Please request a new one.',
+        expired: true
+      });
+    }
+
+    // Mark email as verified
+    user.emailVerified = true;
+    user.emailVerificationToken = undefined;
+    user.emailVerificationExpires = undefined;
+    await user.save();
+
+    logger.info('Email verified', { userId: user.id });
+
+    // Generate JWT token so user can login immediately
+    const payload = {
+      user: {
+        id: user.id,
+      },
+    };
+
+    jwt.sign(
+      payload,
+      process.env.JWT_SECRET,
+      { expiresIn: '7d', algorithm: 'HS256' },
+      (err, jwtToken) => {
+        if (err) {
+          logger.error('JWT signing error after verification', { error: err.message });
+          return res.json({ 
+            msg: 'Email verified successfully! You can now login.',
+            verified: true
+          });
+        }
+        res.json({ 
+          msg: 'Email verified successfully!',
+          verified: true,
+          token: jwtToken,
+          user: {
+            id: user._id,
+            email: user.email,
+            name: user.name || '',
+            avatar: user.avatar,
+            provider: 'local'
+          }
+        });
+      }
+    );
+  } catch (err) {
+    logger.error('Email verification error', { error: err.message });
+    res.status(500).json({ msg: 'Server error' });
+  }
+};
+
+/**
+ * Resend verification email
+ */
+exports.resendVerification = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({ msg: 'Email is required' });
+    }
+
+    const user = await User.findByEmail(email);
+
+    // Security: Don't reveal if email exists
+    if (!user) {
+      return res.json({ msg: 'If an account exists with this email, a verification link has been sent.' });
+    }
+
+    // Check if already verified
+    if (user.emailVerified) {
+      return res.status(400).json({ msg: 'Email is already verified. Please login.' });
+    }
+
+    // Generate new verification token
+    const verificationToken = crypto.randomBytes(32).toString('hex');
+    const verificationExpires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+
+    user.emailVerificationToken = verificationToken;
+    user.emailVerificationExpires = verificationExpires;
+    await user.save();
+
+    // Send verification email
+    try {
+      await sendVerificationEmail(user.email, user.name, verificationToken);
+      logger.info('Verification email resent', { userId: user.id });
+    } catch (emailError) {
+      logger.error('Failed to resend verification email', { error: emailError.message });
+      return res.status(500).json({ msg: 'Failed to send verification email. Please try again.' });
+    }
+
+    res.json({ msg: 'Verification email sent. Please check your inbox.' });
+  } catch (err) {
+    logger.error('Resend verification error', { error: err.message });
     res.status(500).json({ msg: 'Server error' });
   }
 };

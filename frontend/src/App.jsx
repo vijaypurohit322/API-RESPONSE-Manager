@@ -18,6 +18,7 @@ import OAuthCallback from './pages/OAuthCallback';
 import DeviceAuthPage from './pages/DeviceAuthPage';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfService from './pages/TermsOfService';
+import VerifyEmailPage from './pages/VerifyEmailPage';
 import './App.css';
 
 // Protected Route wrapper component
@@ -71,6 +72,7 @@ const App = () => {
         <Route path="/device" element={<DeviceAuthPage />} />
         <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route path="/terms" element={<TermsOfService />} />
+        <Route path="/verify-email" element={<VerifyEmailPage />} />
         
         {/* OAuth Callbacks */}
         <Route path="/auth/google/callback" element={<OAuthCallback provider="google" />} />
