@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import authService from '../services/authService';
 import ThemeToggle from '../components/ThemeToggle';
 import SocialLogin from '../components/SocialLogin';
+import Logo from '../components/Logo';
 import '../App.css';
 
 const LoginPage = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
@@ -17,7 +19,7 @@ const LoginPage = () => {
     setMessage('');
     try {
       await authService.login(email, password);
-      window.location = '/';
+      navigate('/dashboard');
     } catch (error) {
       setMessage(error.response?.data?.msg || 'Failed to login. Please check your credentials.');
       setLoading(false);
@@ -25,16 +27,21 @@ const LoginPage = () => {
   };
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'var(--bg-color)', position: 'relative' }}>
-      {/* Theme Toggle in top-right corner */}
-      <div style={{ position: 'absolute', top: '1.5rem', right: '1.5rem' }}>
+    <div className="auth-page">
+      <div className="auth-bg-gradient"></div>
+      
+      {/* Header with logo and theme toggle */}
+      <div className="auth-header">
+        <Link to="/" className="auth-logo">
+          <Logo size="small" />
+        </Link>
         <ThemeToggle />
       </div>
       
-      <div className="auth-container card" style={{ maxWidth: '400px', width: '100%', margin: '1rem' }}>
+      <div className="auth-container card">
         <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-          <h1 style={{ fontSize: 'var(--font-size-3xl)', fontWeight: 'var(--font-weight-bold)', color: 'var(--primary-color)', marginBottom: '0.5rem' }}>
-            API Response Manager
+          <h1 style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 'var(--font-weight-bold)', color: 'var(--text-primary)', marginBottom: '0.5rem' }}>
+            Welcome back
           </h1>
           <p style={{ color: 'var(--text-secondary)', fontSize: 'var(--font-size-base)' }}>Sign in to your account</p>
         </div>

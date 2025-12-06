@@ -1,6 +1,7 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { BrowserRouter as Router, Route, Routes, Navigate, useLocation } from 'react-router-dom';
 import authService from './services/authService';
+import LandingPage from './pages/LandingPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import HomePage from './pages/HomePage';
@@ -15,57 +16,80 @@ import ProfilePage from './pages/ProfilePage';
 import SettingsPage from './pages/SettingsPage';
 import OAuthCallback from './pages/OAuthCallback';
 import DeviceAuthPage from './pages/DeviceAuthPage';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import TermsOfService from './pages/TermsOfService';
 import './App.css';
 
-const App = () => {
+// Protected Route wrapper component
+const ProtectedRoute = ({ children }) => {
+  const isValid = authService.isTokenValid();
   const currentUser = authService.getCurrentUser();
+  
+  useEffect(() => {
+    // Check token validity periodically
+    const interval = setInterval(() => {
+      if (currentUser && !authService.isTokenValid()) {
+        authService.logout();
+      }
+    }, 60000); // Check every minute
+    
+    return () => clearInterval(interval);
+  }, [currentUser]);
+  
+  if (!currentUser || !isValid) {
+    // Clear invalid session
+    if (currentUser && !isValid) {
+      localStorage.removeItem('user');
+    }
+    return <Navigate to="/login" replace />;
+  }
+  
+  return children;
+};
 
+// Auth Route - redirect to dashboard if already logged in
+const AuthRoute = ({ children }) => {
+  const isValid = authService.isTokenValid();
+  const currentUser = authService.getCurrentUser();
+  
+  if (currentUser && isValid) {
+    return <Navigate to="/dashboard" replace />;
+  }
+  
+  return children;
+};
+
+const App = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
+        {/* Public Routes */}
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/login" element={<AuthRoute><LoginPage /></AuthRoute>} />
+        <Route path="/register" element={<AuthRoute><RegisterPage /></AuthRoute>} />
         <Route path="/share/:token" element={<SharedProjectPage />} />
         <Route path="/device" element={<DeviceAuthPage />} />
+        <Route path="/privacy" element={<PrivacyPolicy />} />
+        <Route path="/terms" element={<TermsOfService />} />
+        
+        {/* OAuth Callbacks */}
         <Route path="/auth/google/callback" element={<OAuthCallback provider="google" />} />
         <Route path="/auth/github/callback" element={<OAuthCallback provider="github" />} />
         <Route path="/auth/microsoft/callback" element={<OAuthCallback provider="microsoft" />} />
-        <Route
-          path="/projects"
-          element={currentUser ? <ProjectPage /> : <Navigate to="/login" />}
-        />
-        <Route
-          path="/projects/:id"
-          element={currentUser ? <ProjectDetailPage /> : <Navigate to="/login" />}
-        />
-        <Route
-          path="/tunnels"
-          element={currentUser ? <TunnelsPage /> : <Navigate to="/login" />}
-        />
-        <Route
-          path="/tunnels/:id"
-          element={currentUser ? <TunnelDetailPage /> : <Navigate to="/login" />}
-        />
-        <Route
-          path="/webhooks"
-          element={currentUser ? <WebhooksPage /> : <Navigate to="/login" />}
-        />
-        <Route
-          path="/webhooks/:id"
-          element={currentUser ? <WebhookDetailPage /> : <Navigate to="/login" />}
-        />
-        <Route
-          path="/profile"
-          element={currentUser ? <ProfilePage /> : <Navigate to="/login" />}
-        />
-        <Route
-          path="/settings"
-          element={currentUser ? <SettingsPage /> : <Navigate to="/login" />}
-        />
-        <Route
-          path="/"
-          element={currentUser ? <HomePage /> : <Navigate to="/login" />}
-        />
+        
+        {/* Protected Routes */}
+        <Route path="/dashboard" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
+        <Route path="/projects" element={<ProtectedRoute><ProjectPage /></ProtectedRoute>} />
+        <Route path="/projects/:id" element={<ProtectedRoute><ProjectDetailPage /></ProtectedRoute>} />
+        <Route path="/tunnels" element={<ProtectedRoute><TunnelsPage /></ProtectedRoute>} />
+        <Route path="/tunnels/:id" element={<ProtectedRoute><TunnelDetailPage /></ProtectedRoute>} />
+        <Route path="/webhooks" element={<ProtectedRoute><WebhooksPage /></ProtectedRoute>} />
+        <Route path="/webhooks/:id" element={<ProtectedRoute><WebhookDetailPage /></ProtectedRoute>} />
+        <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+        <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
+        
+        {/* Catch-all redirect */}
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
   );

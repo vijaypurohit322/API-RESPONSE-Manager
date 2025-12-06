@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import authService from '../services/authService';
 import ThemeToggle from '../components/ThemeToggle';
 import SocialLogin from '../components/SocialLogin';
+import Logo from '../components/Logo';
 import '../App.css';
 
 const RegisterPage = () => {
+  const navigate = useNavigate();
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -21,15 +24,25 @@ const RegisterPage = () => {
       return;
     }
     
-    if (password.length < 6) {
-      setMessage('Password must be at least 6 characters long');
+    if (password.length < 8) {
+      setMessage('Password must be at least 8 characters long');
+      return;
+    }
+
+    // Password policy validation
+    const hasUpperCase = /[A-Z]/.test(password);
+    const hasLowerCase = /[a-z]/.test(password);
+    const hasNumber = /[0-9]/.test(password);
+    
+    if (!hasUpperCase || !hasLowerCase || !hasNumber) {
+      setMessage('Password must contain at least one uppercase letter, one lowercase letter, and one number');
       return;
     }
     
     setLoading(true);
     try {
-      await authService.register(email, password);
-      window.location = '/login';
+      await authService.register(name, email, password);
+      navigate('/login?registered=true');
     } catch (error) {
       setMessage(error.response?.data?.msg || 'Failed to register. Please try again.');
       setLoading(false);
@@ -37,15 +50,20 @@ const RegisterPage = () => {
   };
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'var(--bg-color)', position: 'relative' }}>
-      {/* Theme Toggle in top-right corner */}
-      <div style={{ position: 'absolute', top: '1.5rem', right: '1.5rem' }}>
+    <div className="auth-page">
+      <div className="auth-bg-gradient"></div>
+      
+      {/* Header with logo and theme toggle */}
+      <div className="auth-header">
+        <Link to="/" className="auth-logo">
+          <Logo size="small" />
+        </Link>
         <ThemeToggle />
       </div>
       
-      <div className="auth-container card" style={{ maxWidth: '400px', width: '100%', margin: '1rem' }}>
+      <div className="auth-container card">
         <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-          <h1 style={{ fontSize: 'var(--font-size-3xl)', fontWeight: 'var(--font-weight-bold)', color: 'var(--primary-color)', marginBottom: '0.5rem' }}>
+          <h1 style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 'var(--font-weight-bold)', color: 'var(--text-primary)', marginBottom: '0.5rem' }}>
             Create Account
           </h1>
           <p style={{ color: 'var(--text-secondary)', fontSize: 'var(--font-size-base)' }}>Sign up to get started</p>
@@ -58,6 +76,17 @@ const RegisterPage = () => {
         )}
 
         <form onSubmit={handleRegister}>
+          <div className="form-group">
+            <label className="form-label">Full Name</label>
+            <input
+              type="text"
+              className="form-control"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="John Doe"
+              required
+            />
+          </div>
           <div className="form-group">
             <label className="form-label">Email Address</label>
             <input

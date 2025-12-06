@@ -98,7 +98,7 @@ const OAuthCallback = ({ provider }) => {
           if (response.ok) {
             // Store user data in localStorage
             localStorage.setItem('user', JSON.stringify(data));
-            window.location.href = '/';
+            window.location.href = '/dashboard';
           } else {
             throw new Error(data.msg || 'Authentication failed');
           }
