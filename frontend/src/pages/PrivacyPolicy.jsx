@@ -1,10 +1,28 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import ThemeToggle from '../components/ThemeToggle';
 import Logo from '../components/Logo';
 import '../App.css';
 
 const PrivacyPolicy = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // Scroll to top on mount
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  // Handle back navigation to return to previous scroll position
+  const handleBackClick = (e) => {
+    e.preventDefault();
+    if (location.state?.from) {
+      navigate(-1);
+    } else {
+      navigate('/', { state: { scrollToFooter: true } });
+    }
+  };
+
   return (
     <div className="legal-page">
       <div className="legal-header">
@@ -148,7 +166,7 @@ const PrivacyPolicy = () => {
         </section>
 
         <div className="legal-back">
-          <Link to="/" className="btn btn-secondary">← Back to Home</Link>
+          <button onClick={handleBackClick} className="btn btn-secondary">← Back to Home</button>
         </div>
       </div>
     </div>

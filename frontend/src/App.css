@@ -1329,6 +1329,7 @@ input:checked + .slider:before {
   background: var(--primary-dark);
   transform: translateY(-2px);
   box-shadow: 0 10px 30px rgba(79, 70, 229, 0.3);
+  color: white;
 }
 
 .btn-arrow {
@@ -1692,11 +1693,15 @@ input:checked + .slider:before {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: flex-start;
+  text-align: center;
   padding: 1.5rem 2rem;
   background: var(--card-bg);
   border-radius: 16px;
   border: 1px solid var(--border-color);
-  min-width: 160px;
+  min-width: 180px;
+  width: 180px;
+  min-height: 180px;
   position: relative;
   transition: all 0.3s ease;
   z-index: 2;
@@ -1719,23 +1724,41 @@ input:checked + .slider:before {
 }
 
 .flow-item.center-node {
-  transform: scale(1.05);
+  transform: none;
   z-index: 3;
+  width: 180px;
+  min-height: 180px;
 }
 
 .flow-item.center-node:hover {
-  transform: scale(1.08) translateY(-4px);
+  transform: translateY(-4px);
+}
+
+/* Inline SVG logo in flow diagram */
+.flow-logo-svg {
+  width: 48px;
+  height: 48px;
+  position: relative;
+  z-index: 2;
 }
 
 .flow-icon-wrapper {
   position: relative;
   margin-bottom: 0.75rem;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .flow-icon {
   font-size: 2.5rem;
   position: relative;
   z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .pulse-ring {
@@ -2766,4 +2789,464 @@ input:checked + .slider:before {
   .legal-section h2 {
     font-size: 1.25rem;
   }
+}
+
+/* ============================================
+   LANDING PAGE MOBILE RESPONSIVE
+   ============================================ */
+
+/* Fluid typography for zoom support */
+html {
+  font-size: clamp(14px, 2vw, 16px);
+}
+
+/* Mobile menu - hidden by default on desktop */
+.landing-mobile-menu {
+  display: none;
+}
+
+.mobile-overlay {
+  display: none;
+}
+
+.mobile-menu-btn {
+  display: none;
+}
+
+/* Landing navbar mobile */
+@media (max-width: 768px) {
+  .landing-mobile-menu {
+    display: flex;
+  }
+
+  .mobile-overlay {
+    display: block;
+  }
+  .landing-nav {
+    padding: 0.75rem 1rem;
+  }
+
+  .landing-nav-links {
+    display: none !important;
+  }
+
+  .landing-nav-actions {
+    gap: 0.5rem;
+  }
+
+  .landing-nav-actions .btn-nav-secondary {
+    display: none;
+  }
+
+  .landing-nav-actions .btn-nav-primary {
+    padding: 0.4rem 0.75rem;
+    font-size: 0.8rem;
+  }
+
+  .mobile-menu-btn {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    font-size: 1.25rem;
+  }
+
+  /* Mobile sidebar for landing */
+  .landing-mobile-menu {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 280px;
+    height: 100vh;
+    background: var(--card-bg);
+    z-index: 1001;
+    transition: right 0.3s ease;
+    box-shadow: -4px 0 20px rgba(0, 0, 0, 0.2);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .landing-mobile-menu.open {
+    right: 0;
+  }
+
+  .landing-mobile-menu .mobile-menu-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .landing-mobile-menu .mobile-nav-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .landing-mobile-menu .mobile-nav-links a {
+    padding: 0.75rem 1rem;
+    color: var(--text-primary);
+    text-decoration: none;
+    border-radius: 8px;
+    transition: background 0.2s;
+  }
+
+  .landing-mobile-menu .mobile-nav-links a:hover {
+    background: var(--hover-bg);
+  }
+
+  .landing-mobile-menu .mobile-nav-cta {
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .mobile-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s;
+  }
+
+  .mobile-overlay.open {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  /* Hero section mobile */
+  .hero-section {
+    padding: 6rem 1rem 3rem;
+    min-height: auto;
+  }
+
+  .hero-title {
+    font-size: clamp(1.75rem, 8vw, 2.5rem);
+    line-height: 1.2;
+  }
+
+  .hero-subtitle {
+    font-size: clamp(0.9rem, 3.5vw, 1.1rem);
+    padding: 0 0.5rem;
+  }
+
+  .hero-badge {
+    font-size: 0.75rem;
+    padding: 0.4rem 0.75rem;
+  }
+
+  .hero-cta {
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 0 1rem;
+  }
+
+  .btn-hero-primary,
+  .btn-hero-secondary {
+    width: 100%;
+    justify-content: center;
+    padding: 0.875rem 1.5rem;
+    font-size: 1rem;
+  }
+
+  .hero-stats {
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+  }
+
+  .stat-divider {
+    display: none;
+  }
+
+  .stat-item {
+    min-width: 80px;
+  }
+
+  .stat-value {
+    font-size: 1.25rem;
+  }
+
+  .stat-label {
+    font-size: 0.7rem;
+  }
+
+  /* Terminal preview mobile */
+  .hero-terminal {
+    width: calc(100% - 2rem);
+    margin: 2rem auto 0;
+    max-width: 400px;
+  }
+
+  .terminal-body {
+    font-size: 0.75rem;
+    padding: 1rem;
+  }
+
+  /* Features section mobile */
+  .features-section {
+    padding: 3rem 1rem;
+  }
+
+  .section-title {
+    font-size: clamp(1.5rem, 5vw, 2rem);
+  }
+
+  .section-subtitle {
+    font-size: 0.9rem;
+  }
+
+  .features-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .feature-card {
+    padding: 1.25rem;
+  }
+
+  /* How it works mobile */
+  .how-it-works-section {
+    padding: 3rem 1rem;
+  }
+
+  .steps-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .step-card {
+    padding: 1.25rem;
+  }
+
+  .flow-diagram {
+    flex-direction: column;
+    gap: 0;
+    padding: 1rem;
+    align-items: center;
+  }
+
+  .flow-diagram.animated {
+    flex-direction: column;
+  }
+
+  /* Hide horizontal connectors on mobile */
+  .flow-connector {
+    display: none;
+  }
+
+  .flow-item {
+    padding: 1.25rem;
+    min-width: auto;
+    width: 200px;
+    min-height: 160px;
+    max-width: 200px;
+    position: relative;
+  }
+
+  .flow-item.center-node {
+    transform: none;
+    width: 200px;
+    min-height: 160px;
+  }
+
+  /* Add vertical arrow connectors between items on mobile */
+  .flow-item:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    bottom: -24px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 2px;
+    height: 24px;
+    background: linear-gradient(to bottom, var(--primary-color), var(--primary-color));
+  }
+
+  .flow-item:not(:last-child)::before {
+    content: '↓';
+    position: absolute;
+    bottom: -32px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 1rem;
+    color: var(--primary-color);
+    z-index: 1;
+  }
+
+  .flow-item {
+    margin-bottom: 2rem;
+  }
+
+  .flow-item:last-child {
+    margin-bottom: 0;
+  }
+
+  .flow-icon-wrapper {
+    width: 48px;
+    height: 48px;
+  }
+
+  .flow-icon {
+    font-size: 1.25rem;
+  }
+
+  .flow-label {
+    font-size: 0.85rem;
+  }
+
+  .flow-detail {
+    font-size: 0.7rem;
+  }
+
+  /* Use cases mobile */
+  .use-cases-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .use-case-card {
+    padding: 1.25rem;
+  }
+
+  /* CLI section mobile */
+  .cli-section {
+    padding: 3rem 1rem;
+  }
+
+  .cli-preview {
+    padding: 1rem;
+    font-size: 0.75rem;
+    overflow-x: auto;
+  }
+
+  /* CTA section mobile */
+  .cta-section {
+    padding: 3rem 1rem;
+  }
+
+  .cta-content h2 {
+    font-size: clamp(1.5rem, 5vw, 2rem);
+  }
+
+  .cta-buttons {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .cta-buttons .btn {
+    width: 100%;
+  }
+
+  /* Footer mobile */
+  .landing-footer {
+    padding: 2rem 1rem;
+  }
+
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    text-align: center;
+  }
+
+  .footer-brand {
+    align-items: center;
+  }
+
+  .footer-column {
+    align-items: center;
+  }
+
+  .footer-bottom {
+    flex-direction: column;
+    gap: 0.5rem;
+    text-align: center;
+  }
+}
+
+/* Extra small screens */
+@media (max-width: 480px) {
+  .hero-title {
+    font-size: 1.5rem;
+  }
+
+  .hero-subtitle {
+    font-size: 0.85rem;
+  }
+
+  .btn-hero-primary,
+  .btn-hero-secondary {
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .stat-item {
+    min-width: 70px;
+  }
+
+  .terminal-body {
+    font-size: 0.65rem;
+  }
+
+  .flow-item {
+    width: 180px;
+    max-width: 180px;
+    min-height: 140px;
+    padding: 1rem;
+  }
+
+  .flow-item.center-node {
+    width: 180px;
+    min-height: 140px;
+  }
+}
+
+/* Logo in flow diagram */
+.flow-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flow-icon-wrapper .flow-logo {
+  width: 100%;
+  height: 100%;
+}
+
+.flow-icon-wrapper .flow-logo svg {
+  width: 48px !important;
+  height: 48px !important;
+}
+
+@media (max-width: 768px) {
+  .flow-icon-wrapper .flow-logo svg {
+    width: 36px !important;
+    height: 36px !important;
+  }
+}
+
+/* Mobile close button */
+.mobile-close-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--text-primary);
+  padding: 0.5rem;
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+
+.mobile-close-btn:hover {
+  background: var(--hover-bg);
 }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import authService from '../services/authService';
 import ThemeToggle from '../components/ThemeToggle';
 import Logo from '../components/Logo';
@@ -11,6 +11,7 @@ import '../App.css';
 
 const LandingPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -21,6 +22,20 @@ const LandingPage = () => {
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
+
+  // Handle scroll to footer when returning from legal pages
+  useEffect(() => {
+    if (location.state?.scrollToFooter) {
+      setTimeout(() => {
+        const footer = document.querySelector('footer');
+        if (footer) {
+          footer.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 100);
+      // Clear the state
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -108,14 +123,46 @@ const LandingPage = () => {
 
   return (
     <div className="landing-page">
+      {/* Mobile Menu Overlay */}
+      <div 
+        className={`mobile-overlay ${mobileMenuOpen ? 'open' : ''}`} 
+        onClick={() => setMobileMenuOpen(false)}
+      />
+
+      {/* Mobile Sidebar Menu */}
+      <div className={`landing-mobile-menu ${mobileMenuOpen ? 'open' : ''}`}>
+        <div className="mobile-menu-header">
+          <Logo size="small" />
+          <button 
+            className="mobile-close-btn"
+            onClick={() => setMobileMenuOpen(false)}
+            aria-label="Close menu"
+          >
+            ✕
+          </button>
+        </div>
+        <div className="mobile-nav-links">
+          <a href="#features" onClick={() => setMobileMenuOpen(false)}>Features</a>
+          <a href="#use-cases" onClick={() => setMobileMenuOpen(false)}>Use Cases</a>
+          <a href="#cli" onClick={() => setMobileMenuOpen(false)}>CLI</a>
+          <a href="#pricing" onClick={() => setMobileMenuOpen(false)}>Pricing</a>
+          <a href="https://docs.tunnelapi.in" target="_blank" rel="noopener noreferrer">Docs</a>
+          <a href="https://github.com/vijaypurohit322/api-response-manager" target="_blank" rel="noopener noreferrer">GitHub</a>
+        </div>
+        <div className="mobile-nav-cta">
+          <Link to="/login" className="btn btn-secondary" onClick={() => setMobileMenuOpen(false)}>Sign In</Link>
+          <Link to="/register" className="btn btn-primary" onClick={() => setMobileMenuOpen(false)}>Get Started Free</Link>
+        </div>
+      </div>
+
       {/* Navigation */}
       <nav className={`landing-nav ${scrolled ? 'scrolled' : ''}`}>
         <div className="landing-nav-container">
           <Link to="/" className="landing-logo">
-            <Logo size="default" />
+            <Logo size="small" />
           </Link>
 
-          <div className={`landing-nav-links ${mobileMenuOpen ? 'open' : ''}`}>
+          <div className="landing-nav-links">
             <a href="#features">Features</a>
             <a href="#use-cases">Use Cases</a>
             <a href="#cli">CLI</a>
@@ -137,7 +184,7 @@ const LandingPage = () => {
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               aria-label="Toggle menu"
             >
-              {mobileMenuOpen ? '✕' : '☰'}
+              ☰
             </button>
           </div>
         </div>
@@ -167,9 +214,9 @@ const LandingPage = () => {
               Start Free Trial
               <span className="btn-arrow">→</span>
             </Link>
-            <a href="#cli" className="btn-hero-secondary">
+            <a href="https://docs.tunnelapi.in" target="_blank" rel="noopener noreferrer" className="btn-hero-secondary">
               <span className="btn-icon">⌘</span>
-              View CLI Docs
+              View Docs
             </a>
           </div>
 
@@ -302,7 +349,20 @@ const LandingPage = () => {
               
               <div className="flow-item highlight center-node">
                 <div className="flow-icon-wrapper">
-                  <span className="flow-icon">🚇</span>
+                  <svg className="flow-logo-svg" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                      <linearGradient id="flowTunnelGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stopColor="#4F46E5"/>
+                        <stop offset="100%" stopColor="#8B5CF6"/>
+                      </linearGradient>
+                    </defs>
+                    <circle cx="24" cy="24" r="20" stroke="url(#flowTunnelGradient)" strokeWidth="3" fill="none"/>
+                    <circle cx="24" cy="24" r="14" stroke="url(#flowTunnelGradient)" strokeWidth="2" fill="none" opacity="0.7"/>
+                    <circle cx="24" cy="24" r="8" fill="url(#flowTunnelGradient)"/>
+                    <path d="M10 24 L18 24 M30 24 L38 24" stroke="url(#flowTunnelGradient)" strokeWidth="2.5" strokeLinecap="round"/>
+                    <path d="M14 20 L18 24 L14 28" stroke="url(#flowTunnelGradient)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+                    <path d="M34 20 L30 24 L34 28" stroke="url(#flowTunnelGradient)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+                  </svg>
                   <div className="pulse-ring active"></div>
                 </div>
                 <span className="flow-label">TunnelAPI</span>
@@ -579,8 +639,8 @@ const LandingPage = () => {
               <div className="footer-column">
                 <h4>Legal</h4>
                 <a href="https://github.com/vijaypurohit322/api-response-manager/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">License</a>
-                <Link to="/privacy">Privacy Policy</Link>
-                <Link to="/terms">Terms of Service</Link>
+                <Link to="/privacy" state={{ from: 'landing' }}>Privacy Policy</Link>
+                <Link to="/terms" state={{ from: 'landing' }}>Terms of Service</Link>
               </div>
             </div>
           </div>
