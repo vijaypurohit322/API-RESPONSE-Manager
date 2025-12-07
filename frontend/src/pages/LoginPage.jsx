@@ -1,47 +1,107 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import authService from '../services/authService';
 import ThemeToggle from '../components/ThemeToggle';
 import SocialLogin from '../components/SocialLogin';
+import Logo from '../components/Logo';
 import '../App.css';
 
+const API_URL = import.meta.env.VITE_API_URL || 'https://api.tunnelapi.in/api';
+
 const LoginPage = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
+  const [needsVerification, setNeedsVerification] = useState(false);
+  const [resending, setResending] = useState(false);
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
     setMessage('');
+    setNeedsVerification(false);
     try {
       await authService.login(email, password);
-      window.location = '/';
+      navigate('/dashboard');
     } catch (error) {
-      setMessage(error.response?.data?.msg || 'Failed to login. Please check your credentials.');
+      const errorData = error.response?.data;
+      if (errorData?.requiresVerification) {
+        setNeedsVerification(true);
+        setMessage(errorData.msg);
+      } else {
+        setMessage(errorData?.msg || 'Failed to login. Please check your credentials.');
+      }
       setLoading(false);
     }
   };
 
+  const handleResendVerification = async () => {
+    setResending(true);
+    try {
+      const response = await fetch(`${API_URL}/auth/resend-verification`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      const data = await response.json();
+      setMessage(data.msg);
+      setNeedsVerification(false);
+    } catch (error) {
+      setMessage('Failed to resend verification email.');
+    } finally {
+      setResending(false);
+    }
+  };
+
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'var(--bg-color)', position: 'relative' }}>
-      {/* Theme Toggle in top-right corner */}
-      <div style={{ position: 'absolute', top: '1.5rem', right: '1.5rem' }}>
+    <div className="auth-page">
+      <div className="auth-bg-gradient"></div>
+      
+      {/* Header with logo and theme toggle */}
+      <div className="auth-header">
+        <Link to="/" className="auth-logo">
+          <Logo size="small" />
+        </Link>
         <ThemeToggle />
       </div>
       
-      <div className="auth-container card" style={{ maxWidth: '400px', width: '100%', margin: '1rem' }}>
+      <div className="auth-container card">
         <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-          <h1 style={{ fontSize: 'var(--font-size-3xl)', fontWeight: 'var(--font-weight-bold)', color: 'var(--primary-color)', marginBottom: '0.5rem' }}>
-            API Response Manager
+          <h1 style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 'var(--font-weight-bold)', color: 'var(--text-primary)', marginBottom: '0.5rem' }}>
+            Welcome back
           </h1>
           <p style={{ color: 'var(--text-secondary)', fontSize: 'var(--font-size-base)' }}>Sign in to your account</p>
         </div>
 
         {message && (
-          <div className="alert alert-error">
+          <div className={`alert ${needsVerification ? 'alert-warning' : 'alert-error'}`} style={{
+            background: needsVerification ? 'rgba(245, 158, 11, 0.1)' : undefined,
+            borderColor: needsVerification ? 'rgba(245, 158, 11, 0.3)' : undefined,
+            color: needsVerification ? '#f59e0b' : undefined
+          }}>
             {message}
+            {needsVerification && (
+              <button
+                onClick={handleResendVerification}
+                disabled={resending}
+                style={{
+                  display: 'block',
+                  marginTop: '0.75rem',
+                  padding: '0.5rem 1rem',
+                  background: 'var(--primary-color)',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '6px',
+                  cursor: resending ? 'not-allowed' : 'pointer',
+                  fontSize: '0.875rem',
+                  width: '100%'
+                }}
+              >
+                {resending ? 'Sending...' : 'Resend Verification Email'}
+              </button>
+            )}
           </div>
         )}
 

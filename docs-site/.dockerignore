@@ -1,0 +1,8 @@
+node_modules
+build
+.docusaurus
+.cache-loader
+*.log
+.git
+.gitignore
+README.md
